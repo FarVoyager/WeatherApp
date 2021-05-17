@@ -70,15 +70,17 @@ class MainFragment : Fragment() {
         binding.temperatureSensedInfo.text = weatherData.temperatureSensed
         binding.humidityInfo.text = weatherData.humidity
         binding.windInfo.text = weatherData.wind
-        if (weatherData.clouds == "sunny") {
-            binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
-//            binding.cloudsInfo.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.sunny, null))
-        } else if (weatherData.clouds == "cloudy") {
-            binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.noclouds)
-//            binding.cloudsInfo.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.foggy, null))
-        } else if (weatherData.clouds == "rainy") {
-            binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
+        when (weatherData.clouds) {
+            "sunny" -> {
+                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
+            }
+            "cloudy" -> {
+                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.noclouds)
+            }
+            "rainy" -> {
+                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
 
+            }
         }
     }
 

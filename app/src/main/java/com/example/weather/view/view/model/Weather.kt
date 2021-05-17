@@ -9,4 +9,4 @@ data class Weather(
     val clouds: String = "rainy"
         )
 
-fun getDefaultCity() = City("Moscow", "European")
+fun getDefaultCity() = City("Москва", "European")
