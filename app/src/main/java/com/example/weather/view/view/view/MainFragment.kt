@@ -20,6 +20,7 @@ class MainFragment : Fragment() {
     //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
     private var _binding : FragmentMainBinding? = null
     private val binding get() = _binding!!
+    //создаем экземпляр нашей вьюмодели
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
