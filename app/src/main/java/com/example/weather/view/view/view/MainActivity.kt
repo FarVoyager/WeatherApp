@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         //переходим на фрагмент MainFragment при создании активити
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
+                .replace(R.id.container, DetailsFragment.newInstance())
                 .commitNow()
         }
     }

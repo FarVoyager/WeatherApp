@@ -18,14 +18,18 @@ class MainViewModel(
     fun getLiveData() = liveDataToObserve
 
     //методы получения класса Weather из локального хранилища и с удаленного хранилища
-    fun getWeatherFromLocalSource() = getDataFromLocalSource()
-    fun getWeatherFromRemoteSource() = getDataFromLocalSource()
+    fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(isRussian = true)
+    fun getWeatherFromLocalSourceWorld() = getDataFromLocalSource(isRussian = false)
 
-    private fun getDataFromLocalSource() {
+    fun getWeatherFromRemoteSource() = getDataFromLocalSource(isRussian = true)
+
+    private fun getDataFromLocalSource(isRussian : Boolean) {
         liveDataToObserve.value = AppState.Loading
         Thread {
             sleep(1000)
-            liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalSource()))
+            liveDataToObserve.postValue(AppState.Success(if (isRussian)
+                repositoryImpl.getWeatherFromLocalSourceRus() else
+                repositoryImpl.getWeatherFromLocalSourceWorld()))
         }.start()
     }
 }

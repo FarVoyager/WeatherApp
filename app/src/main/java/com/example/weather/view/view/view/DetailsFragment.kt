@@ -8,17 +8,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
-import com.example.weather.databinding.FragmentMainBinding
+import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.view.view.model.Weather
 import com.example.weather.view.view.viewmodel.AppState
 import com.example.weather.view.view.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
 
-class MainFragment : Fragment() {
+class DetailsFragment : Fragment() {
 
     //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
-    private var _binding : FragmentMainBinding? = null
+    private var _binding : FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     //создаем экземпляр нашего класса MainViewModel
     private lateinit var viewModel: MainViewModel
@@ -27,7 +27,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -81,13 +81,15 @@ class MainFragment : Fragment() {
             }
             "rainy" -> {
                 binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
-
+            }
+            else -> {
+                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.noclouds)
             }
         }
     }
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = DetailsFragment()
     }
 
 }

@@ -4,5 +4,7 @@ package com.example.weather.view.view.model
 //методы реализуются в классе RepositoryImpl
 interface Repository {
     fun getWeatherFromServer() : Weather
-    fun getWeatherFromLocalSource() : Weather
+    fun getWeatherFromLocalSourceRus() : List<Weather>
+    fun getWeatherFromLocalSourceWorld() : List<Weather>
+
 }
