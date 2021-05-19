@@ -20,7 +20,7 @@ class MainFragment : Fragment() {
     //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
     private var _binding : FragmentMainBinding? = null
     private val binding get() = _binding!!
-    //создаем экземпляр нашей вьюмодели
+    //создаем экземпляр нашего класса MainViewModel
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
@@ -36,17 +36,17 @@ class MainFragment : Fragment() {
         //привязываем жизненный цикл viewModel к фрагменту, this - текущий фрагмент, пока он жив, жив и viewModel
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         //viewLifeCycleOwner позволяет liveData получить состояние компонента, в котором она находится
+        //viewLifeCycleOwner - это метод get, Observer описан лямбдой, внутри тела которой метод renderData, it - это наш AppState
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getWeatherFromLocalSource()
     }
 
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
+
 
     private fun renderData(appState: AppState) {
         when (appState) {
+            //сли состояние Success - вызываем метод setData
             is AppState.Success -> {
                 val weatherData = appState.weatherData
                 binding.loadingLayout.visibility = View.GONE
@@ -65,6 +65,7 @@ class MainFragment : Fragment() {
         }
     }
 
+    //Метод setData обновляет отображение данных во фрагменте
     private fun setData(weatherData: Weather) {
         binding.cityName.text = weatherData.city.name
         binding.temperatureFactInfo.text = weatherData.temperatureFact
@@ -83,6 +84,10 @@ class MainFragment : Fragment() {
 
             }
         }
+    }
+
+    companion object {
+        fun newInstance() = MainFragment()
     }
 
 }
