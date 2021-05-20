@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
 import com.example.weather.databinding.FragmentMainBinding
+import com.example.weather.view.view.model.Weather
 import com.example.weather.view.view.viewmodel.AppState
 import com.example.weather.view.view.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -19,9 +20,26 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: MainViewModel
-    private val adapter = MainFragmentAdapter()
-    private var isDataSetRus : Boolean = true
 
+    private var isDataSetRus: Boolean = true
+
+    interface OnItemViewClickListener {
+        fun onItemViewClick(weather: Weather)
+    }
+
+    private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
+        override fun onItemViewClick(weather: Weather) {
+            val manager = activity?.supportFragmentManager
+            if (manager != null) {
+                val bundle = Bundle()
+                bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
+                manager.beginTransaction()
+                    .replace(R.id.container, DetailsFragment.newInstance(bundle))
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+            }
+        }
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +65,8 @@ class MainFragment : Fragment() {
         } else {
             viewModel.getWeatherFromLocalSourceRus()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
-            isDataSetRus = !isDataSetRus
         }
+        isDataSetRus = !isDataSetRus
     }
 
     private fun renderData(appState: AppState) {
@@ -63,7 +81,11 @@ class MainFragment : Fragment() {
             is AppState.Error -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
                 Snackbar
-                    .make(binding.mainFragmentFAB, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
+                    .make(
+                        binding.mainFragmentFAB,
+                        getString(R.string.error),
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                     .setAction(getString(R.string.reload)) {
                         viewModel.getWeatherFromLocalSourceRus()
                     }.show()
@@ -74,5 +96,11 @@ class MainFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = MainFragment()
+    }
+
+    //Удаляем лисенер из адаптера чтобы предотвратить утечки памяти
+    override fun onDestroy() {
+        adapter.removeListener()
+        super.onDestroy()
     }
 }

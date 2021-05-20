@@ -1,49 +1,70 @@
-//package com.example.weather.view.view.view
-//
-//import android.os.Bundle
-//import androidx.fragment.app.Fragment
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import androidx.lifecycle.Observer
-//import androidx.lifecycle.ViewModelProvider
-//import com.example.weather.R
-//import com.example.weather.databinding.FragmentDetailsBinding
-//import com.example.weather.view.view.model.Weather
-//import com.example.weather.view.view.viewmodel.AppState
-//import com.example.weather.view.view.viewmodel.MainViewModel
-//import com.google.android.material.snackbar.Snackbar
-//
-//
-//class DetailsFragment : Fragment() {
-//
-//    //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
-//    private var _binding : FragmentDetailsBinding? = null
-//    private val binding get() = _binding!!
-//    //создаем экземпляр нашего класса MainViewModel
-//    private lateinit var viewModel: MainViewModel
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-//        return binding.root
-//    }
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        //привязываем жизненный цикл viewModel к фрагменту, this - текущий фрагмент, пока он жив, жив и viewModel
-//        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-//        //viewLifeCycleOwner позволяет liveData получить состояние компонента, в котором она находится
-//        //viewLifeCycleOwner - это метод get, Observer описан лямбдой, внутри тела которой метод renderData, it - это наш AppState
-//        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-//        viewModel.getWeatherFromLocalSource()
-//    }
-//
-//
-//
-//
+package com.example.weather.view.view.view
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.example.weather.R
+import com.example.weather.databinding.FragmentDetailsBinding
+import com.example.weather.view.view.model.Weather
+
+
+class DetailsFragment : Fragment() {
+
+    //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
+    private var _binding: FragmentDetailsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val weather = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)
+        if (weather != null) {
+            val city = weather.city
+            binding.cityName.text = city.name
+            binding.temperatureFactInfo.text = weather.temperatureFact
+            binding.temperatureSensedInfo.text = weather.temperatureSensed
+            binding.humidityInfo.text = weather.humidity
+            binding.windInfo.text = weather.wind
+
+            when (weather.clouds) {
+                "sunny" -> {
+                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
+                }
+                "cloudy" -> {
+                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
+                }
+                "rainy" -> {
+                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
+                }
+                else -> {
+                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
+                }
+            }
+
+        }
+    }
+
+    companion object {
+
+        const val BUNDLE_EXTRA = "weather"
+
+        fun newInstance(bundle: Bundle): DetailsFragment {
+            val fragment = DetailsFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+
 //    private fun renderData(appState: AppState) {
 //        when (appState) {
 //            //сли состояние Success - вызываем метод setData
@@ -72,24 +93,7 @@
 //        binding.temperatureSensedInfo.text = weatherData.temperatureSensed
 //        binding.humidityInfo.text = weatherData.humidity
 //        binding.windInfo.text = weatherData.wind
-//        when (weatherData.clouds) {
-//            "sunny" -> {
-//                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
-//            }
-//            "cloudy" -> {
-//                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.noclouds)
-//            }
-//            "rainy" -> {
-//                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
-//            }
-//            else -> {
-//                binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.noclouds)
-//            }
-//        }
 //    }
-//
-//    companion object {
-//        fun newInstance() = DetailsFragment()
-//    }
-//
-//}
+
+
+}
