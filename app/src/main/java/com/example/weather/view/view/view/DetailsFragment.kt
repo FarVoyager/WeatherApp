@@ -9,7 +9,7 @@ import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.view.view.model.Weather
 
-
+//класс сократился, функции viewmodel переехали в MainFragment
 class DetailsFragment : Fragment() {
 
     //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
@@ -26,7 +26,9 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val weather = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)
+        //создается переменная типа Weather, которой присваивается сохраненный ранее Weather в Bundle
+        val weather : Weather? = arguments?.getParcelable(BUNDLE_EXTRA)
+        //экран заполняется данными из только что взятого из Bundle экземпляра класса Weather
         if (weather != null) {
             val city = weather.city
             binding.cityName.text = city.name
@@ -53,47 +55,22 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    //Реализация Parcelable, в Gradle был прописан     id 'kotlin-parcelize'
     companion object {
-
+        //ключ для сохранения и загрузки элемента Weather
         const val BUNDLE_EXTRA = "weather"
 
+        //метод увеличился из-за парселизации, теперь в него передается Bundle
+        //в который при нажатии на элемент списка был передан Weather (это происходит в MainFragment)
         fun newInstance(bundle: Bundle): DetailsFragment {
+            //создается пустой фрагмент Details
             val fragment = DetailsFragment()
+            //с помощью метода arguments мы присваиваем переданные Bundle этому фрагменту
             fragment.arguments = bundle
+            //и возвращаем его
             return fragment
         }
     }
-
-
-//    private fun renderData(appState: AppState) {
-//        when (appState) {
-//            //сли состояние Success - вызываем метод setData
-//            is AppState.Success -> {
-//                val weatherData = appState.weatherData
-//                binding.loadingLayout.visibility = View.GONE
-//                setData(weatherData)
-//            }
-//            is AppState.Loading -> {
-//                binding.loadingLayout.visibility = View.VISIBLE
-//            }
-//            is AppState.Error -> {
-//                binding.loadingLayout.visibility = View.GONE
-//                Snackbar
-//                    .make(binding.container, getString(R.string.error), Snackbar.LENGTH_SHORT)
-//                    .setAction(getString(R.string.reload)) {viewModel.getWeatherFromLocalSource() }
-//                    .show()
-//            }
-//        }
-//    }
-//
-//    //Метод setData обновляет отображение данных во фрагменте
-//    private fun setData(weatherData: Weather) {
-//        binding.cityName.text = weatherData.city.name
-//        binding.temperatureFactInfo.text = weatherData.temperatureFact
-//        binding.temperatureSensedInfo.text = weatherData.temperatureSensed
-//        binding.humidityInfo.text = weatherData.humidity
-//        binding.windInfo.text = weatherData.wind
-//    }
 
 
 }

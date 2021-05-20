@@ -16,21 +16,29 @@ import com.google.android.material.snackbar.Snackbar
 
 class MainFragment : Fragment() {
 
+    //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
+    //Экземпляр класса MainViewModel теперь здесь, во фрагменте MainFragment
     private lateinit var viewModel: MainViewModel
 
+    // Значение для определения, список каких городов на данный момент отображается
     private var isDataSetRus: Boolean = true
 
+    //Вложенный интерфейс для реализации переключения на фрагмент Details по нажатию на элемент списка
     interface OnItemViewClickListener {
         fun onItemViewClick(weather: Weather)
     }
 
+    //создаем экземпляр адаптера RecyclerView, в поле аргументов наш интерфейс с реализацией
     private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
+        //переопределяем (реализуем) метод интерфейса
         override fun onItemViewClick(weather: Weather) {
             val manager = activity?.supportFragmentManager
             if (manager != null) {
+                //создаем пустой Bundle, пихаем в него элемент типа Weather из ранее созданного ListOf (метод bind в адаптере)
+                //переходим на фрагмент Details
                 val bundle = Bundle()
                 bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
                 manager.beginTransaction()
@@ -49,15 +57,22 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //соединяем наш RecyclerView с адаптером, созданным ранее
         binding.mainFragmentRecyclerView.adapter = adapter
+        //реализуем исполнение метода changeWeatherDataSet по нажатию на FAB
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
+        //привязываем жизненный цикл MainViewModel ко фрагменту (this)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        //привязываем LiveData, в качестве 2-го аргумента метода observe вызываем метод renderData, it - AppState
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
+        //получаем данные с локального хранилища
         viewModel.getWeatherFromLocalSourceRus()
     }
 
+    //метод реализует действия при нажатии на FAB
     private fun changeWeatherDataSet() {
         if (isDataSetRus) {
             viewModel.getWeatherFromLocalSourceWorld()
@@ -69,6 +84,7 @@ class MainFragment : Fragment() {
         isDataSetRus = !isDataSetRus
     }
 
+    //метод получает в аргументах текущий AppState и в зависимости от его состояния отображает содержимое экрана
     private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
@@ -98,7 +114,7 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    //Удаляем лисенер из адаптера чтобы предотвратить утечки памяти
+    //при уничтожении фрагмента удаляем лисенер из адаптера чтобы предотвратить утечки памяти
     override fun onDestroy() {
         adapter.removeListener()
         super.onDestroy()
