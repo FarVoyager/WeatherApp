@@ -4,5 +4,4 @@ class RepositoryImpl : Repository {
     override fun getWeatherFromServer() = Weather()
     override fun getWeatherFromLocalSourceRus() = getRussianCities()
     override fun getWeatherFromLocalSourceWorld() = getWorldCities()
-    }
 }
