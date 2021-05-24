@@ -21,7 +21,11 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Экземпляр класса MainViewModel теперь здесь, во фрагменте MainFragment
-    private lateinit var viewModel: MainViewModel
+    //lazy - ленивая инициализация,
+    private val viewModel: MainViewModel by lazy {
+        //привязываем жизненный цикл MainViewModel ко фрагменту (this)
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
 
     // Значение для определения, список каких городов на данный момент отображается
     private var isDataSetRus: Boolean = true
@@ -64,8 +68,6 @@ class MainFragment : Fragment() {
         binding.mainFragmentRecyclerView.adapter = adapter
         //реализуем исполнение метода changeWeatherDataSet по нажатию на FAB
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
-        //привязываем жизненный цикл MainViewModel ко фрагменту (this)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         //привязываем LiveData, в качестве 2-го аргумента метода observe вызываем метод renderData, it - AppState
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         //получаем данные с локального хранилища
@@ -74,7 +76,7 @@ class MainFragment : Fragment() {
 
     //метод реализует действия при нажатии на FAB
     private fun changeWeatherDataSet() {
-        if (isDataSetRus) {
+        if (isDataSetRus)  {
             viewModel.getWeatherFromLocalSourceWorld()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
         } else {
@@ -119,4 +121,6 @@ class MainFragment : Fragment() {
         adapter.removeListener()
         super.onDestroy()
     }
+
+
 }

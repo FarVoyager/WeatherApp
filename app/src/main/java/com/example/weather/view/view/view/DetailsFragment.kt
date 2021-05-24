@@ -29,13 +29,13 @@ class DetailsFragment : Fragment() {
         //создается переменная типа Weather, которой присваивается сохраненный ранее Weather в Bundle
         val weather : Weather? = arguments?.getParcelable(BUNDLE_EXTRA)
         //экран заполняется данными из только что взятого из Bundle экземпляра класса Weather
-        if (weather != null) {
+        if (weather != null) binding.apply {
             val city = weather.city
-            binding.cityName.text = city.name
-            binding.temperatureFactInfo.text = weather.temperatureFact
-            binding.temperatureSensedInfo.text = weather.temperatureSensed
-            binding.humidityInfo.text = weather.humidity
-            binding.windInfo.text = weather.wind
+            cityName.text = city.name
+            temperatureFactInfo.text = weather.temperatureFact
+            temperatureSensedInfo.text = weather.temperatureSensed
+            humidityInfo.text = weather.humidity
+            windInfo.text = weather.wind
 
             when (weather.clouds) {
                 "sunny" -> {

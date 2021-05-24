@@ -55,14 +55,17 @@ class MainFragmentAdapter(private var onItemViewClickListener: MainFragment.OnIt
     inner class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(weather: Weather) {
-            //Элементу списка присваивается имя согласно переданному Weather на определенной позиции
-            //см. onBindViewHolder
-            itemView.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
-                weather.city.name
-            //Реализация действия при нажатии на элемент RecyclerView
-            itemView.setOnClickListener {
-                //вызывается метод onItemViewClick который был определен в MainFragment
-                onItemViewClickListener?.onItemViewClick(weather)
+            //apply - Extension-функция, позволяет нагляднее отобразить код в случае присваивания значений
+            itemView.apply {
+                //Элементу списка присваивается имя согласно переданному Weather на определенной позиции
+                //см. onBindViewHolder
+                findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
+                    weather.city.name
+                //Реализация действия при нажатии на элемент RecyclerView
+                setOnClickListener {
+                    //вызывается метод onItemViewClick который был определен в MainFragment
+                    onItemViewClickListener?.onItemViewClick(weather)
+                }
             }
         }
     }
