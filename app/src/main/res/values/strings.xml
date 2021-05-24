@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Weather</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error">Error</string>
+    <string name="reload">Reload</string>
+    <string name="humidity">Влажность</string>
+    <string name="wind">3 м/с ЮЗ</string>
+    <string name="title">Погода в городе</string>
 </resources>
