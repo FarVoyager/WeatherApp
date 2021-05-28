@@ -4,8 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,14 +16,7 @@ import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.view.view.model.Weather
 import com.example.weather.view.view.model.WeatherDTO
 import com.example.weather.view.view.model.WeatherLoader
-import com.google.gson.Gson
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.Exception
-import java.net.MalformedURLException
-import java.net.URL
-import java.util.stream.Collectors
-import javax.net.ssl.HttpsURLConnection
+
 
 
 class DetailsFragment : Fragment() {

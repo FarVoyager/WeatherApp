@@ -5,7 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.viewbinding.BuildConfig
 import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
