@@ -1,13 +1,18 @@
 package com.example.weather.view.view.model
 
-data class WeatherDTO (
-    val fact: FactDTO?
-        )
+data class WeatherDTO(
+    val fact: FactDTO?,
+    val forecast: ForecastDTO
+)
 
-data class FactDTO (
-    val tempFact: Int?,
-    val tempSensed: Int?,
+data class ForecastDTO(
+    val date: String?
+)
+
+data class FactDTO(
+    val temp: Int?,
+    val feels_like: Int?,
     val humidity: String?,
-    val wind: String?,
-    val clouds: String?
+    val wind_speed: String?,
+    val condition: String?
 )

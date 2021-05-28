@@ -18,7 +18,6 @@ import com.example.weather.view.view.model.WeatherDTO
 import com.example.weather.view.view.model.WeatherLoader
 
 
-
 class DetailsFragment : Fragment() {
 
     //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
@@ -40,9 +39,10 @@ class DetailsFragment : Fragment() {
             override fun onLoaded(weatherDTO: WeatherDTO) {
                 displayWeather(weatherDTO)
             }
+
             override fun onFailed(throwable: Throwable) {
                 Log.e(null, "Ошибка", throwable)
-                Toast.makeText(context,"Error loading data", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Error loading data", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -60,7 +60,8 @@ class DetailsFragment : Fragment() {
         //выполняем требование для использования API Яндекс.Погоды
         //при нажатии на Яндекс.Погода открывается ее сайт
         binding.yandex.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/pogoda/moscow"))
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/pogoda/moscow"))
             startActivity(browserIntent)
         }
     }
@@ -72,20 +73,34 @@ class DetailsFragment : Fragment() {
             loadingLayout.visibility = View.GONE
             val city = weatherBundle.city
             cityName.text = city.name
+            forecastDate.text = weatherDTO.forecast.date
 
-            windInfo.text = weatherDTO.fact?.wind
-            humidityInfo.text = weatherDTO.fact?.humidity
-            temperatureFactInfo.text = weatherDTO.fact?.tempFact.toString()
-            temperatureSensedInfo.text = weatherDTO.fact?.tempSensed.toString()
+            val windInfoStr: String = weatherDTO.fact?.wind_speed + " м/с"
+            windInfo.text = windInfoStr
+            val humidityInfoStr: String = weatherDTO.fact?.humidity + "%"
+            humidityInfo.text = humidityInfoStr
+            temperatureFactInfo.text = weatherDTO.fact?.temp.toString()
+            temperatureSensedInfo.text = weatherDTO.fact?.feels_like.toString()
 
-            when (weatherDTO.fact?.clouds) {
-                "sunny" -> {
+            if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
+                pointerFact.text = "+"
+                pointerSensed.text = "+"
+            } else if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp < 0) {
+                pointerFact.text = "-"
+                pointerSensed.text = "-"
+            } else {
+                pointerFact.text = ""
+                pointerSensed.text = ""
+            }
+
+            when (weatherDTO.fact?.condition) {
+                "clear" -> {
                     binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
                 }
                 "cloudy" -> {
                     binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
                 }
-                "rainy" -> {
+                "overcast" -> {
                     binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
                 }
                 else -> {
@@ -100,6 +115,7 @@ class DetailsFragment : Fragment() {
     companion object {
         //ключ для сохранения и загрузки элемента Weather
         const val BUNDLE_EXTRA = "weather"
+
         //метод увеличился из-за парселизации, теперь в него передается Bundle
         //в который при нажатии на элемент списка был передан Weather (это происходит в MainFragment)
         fun newInstance(bundle: Bundle): DetailsFragment {

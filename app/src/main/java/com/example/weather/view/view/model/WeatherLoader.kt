@@ -46,14 +46,15 @@ class WeatherLoader(
                     urlConnection.requestMethod = "GET"
                     //задаем ключ для доступа к API
                     //ключ теперь хранится не в теле фрагмента, а в отдельном файле проекта в целях безопасности
-                    urlConnection.addRequestProperty("X-Yandex-API-Key", com.example.weather.BuildConfig.WEATHER_API_KEY)
+                    urlConnection.addRequestProperty(
+                        "X-Yandex-API-Key",
+                        com.example.weather.BuildConfig.WEATHER_API_KEY
+                    )
                     //определяем таймаут на чтение
                     urlConnection.readTimeout = 10000
                     //преобразовываем входящий поток данных в набор символов
                     val bufferedReader =
                         BufferedReader(InputStreamReader(urlConnection.inputStream))
-                    println(bufferedReader)
-                    print("HUI")
 
                     //преобразование ответа от сервера (JSON) в модель данных (WeatherDTO)
                     val weatherDTO: WeatherDTO =

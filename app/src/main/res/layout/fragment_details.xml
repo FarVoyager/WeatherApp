@@ -53,7 +53,7 @@
                     android:id="@+id/cityName"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/defaultMargin20dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:textAlignment="center"
                     android:layout_weight="1"
@@ -61,6 +61,17 @@
                     android:textSize="25sp"
                     tools:text="City"
  />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:text="Сейчас
+"
+                    />
 
             </LinearLayout>
 
@@ -78,15 +89,30 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/temperatureFactInfo"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:textSize="64sp"
-                            tools:text="+23"
-                            android:layout_marginLeft="@dimen/defaultMargin20dp"
-                            android:layout_marginStart="@dimen/defaultMargin20dp" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/pointerFact"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:textSize="64sp"
+                                tools:text="+"
+                                android:layout_marginLeft="@dimen/defaultMargin20dp"
+                                android:layout_marginStart="@dimen/defaultMargin20dp" />
+
+                            <TextView
+                                android:id="@+id/temperatureFactInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:textSize="64sp"
+                                tools:text="23" />
+
+                        </LinearLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -96,19 +122,36 @@
                             android:layout_marginStart="@dimen/defaultMargin20dp"
                             android:gravity="center"
                             android:textSize="16sp"
-                            android:text="Ощущается как"
-                            />
+                            android:text="@string/sensedTitle" />
 
-                        <TextView
-                            android:id="@+id/temperatureSensedInfo"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/defaultMargin20dp"
-                            android:layout_marginStart="@dimen/defaultMargin20dp"
-                            android:gravity="right"
-                            android:textSize="32sp"
-                            tools:text="+18"
-                            />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/pointerSensed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/defaultMargin20dp"
+                                android:layout_marginStart="@dimen/defaultMargin20dp"
+                                android:gravity="end"
+                                android:textSize="32sp"
+                                tools:text="+" />
+
+                            <TextView
+                                android:id="@+id/temperatureSensedInfo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="end"
+                                android:textSize="32sp"
+                                tools:text="19" />
+
+                        </LinearLayout>
+
+
+
+
 
                     </LinearLayout>
 
@@ -124,7 +167,7 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/defaultMargin20dp"
-                            android:layout_gravity="right"
+                            android:layout_gravity="end"
                             android:textColor="@color/black"
                             android:text="@string/humidity" />
 
@@ -132,23 +175,23 @@
                             android:id="@+id/humidityInfo"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="right"
+                            android:layout_gravity="end"
                             android:textColor="@color/black"
                             tools:text="68%" />
 
                         <TextView
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="right"
+                            android:layout_gravity="end"
                             android:layout_marginTop="@dimen/defaultMargin20dp"
                             android:textColor="@color/black"
-                            android:text="Ветер" />
+                            android:text="@string/windTitle" />
 
                         <TextView
                             android:id="@+id/windInfo"
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="right"
+                            android:layout_gravity="end"
                             android:textColor="@color/black"
                             tools:text="@string/wind" />
 
@@ -166,18 +209,18 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/forecastDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/black"
             android:textSize="24sp"
-            android:text="Погода на ближайшие дни" />
+            android:text="@string/dayTimeTitle" />
         <TextView
             android:id="@+id/yandex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Яндекс.Погода"
+            android:text="@string/yandexWeatherWidget"
             android:textColor="@color/black"
             android:layout_margin="5dp"
             android:layout_gravity="end"
@@ -188,48 +231,54 @@
             android:layout_height="50dp">
 
             <TextView
-                android:id="@+id/day"
+                android:id="@+id/forecastDayTime"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/margin_15_dp"
+                android:layout_marginStart="@dimen/margin_15_dp"
                 android:gravity="center_vertical"
-                android:text="Завтра"
+                tools:text="Day Time"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+ />
 
 
             <ImageView
-                android:id="@+id/dayImage"
+                android:id="@+id/forecastImage"
                 android:layout_width="70dp"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/dayTempFact"
+                app:layout_constraintEnd_toStartOf="@id/forecastTempFact"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/foggy" />
+                app:srcCompat="@drawable/foggy"
+                android:contentDescription="@string/an_image_of_weather_condition" />
 
             <TextView
-                android:id="@+id/dayTempFact"
+                android:id="@+id/forecastTempFact"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:gravity="center_vertical"
-                android:text="+18"
+                tools:text="+18"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/dayTempSensed"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/forecastTempSensed"
+                app:layout_constraintTop_toTopOf="parent"
+ />
 
             <TextView
-                android:id="@+id/dayTempSensed"
+                android:id="@+id/forecastTempSensed"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/margin_15_dp"
+                android:layout_marginEnd="15dp"
                 android:gravity="center_vertical"
-                android:text="+15"
+                tools:text="+15"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
