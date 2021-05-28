@@ -2,7 +2,7 @@ package com.example.weather.view.view.model
 
 data class WeatherDTO(
     val fact: FactDTO?,
-    val forecast: ForecastDTO
+    val forecast: ForecastDTO?
 )
 
 data class ForecastDTO(

@@ -59,7 +59,7 @@
                     android:layout_weight="1"
                     android:textColor="@color/black"
                     android:textSize="25sp"
-                    tools:text="City"
+                    android:text="City"
  />
                 <TextView
                     android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                     android:layout_weight="1"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    tools:text="Сейчас
+                    android:text="Сейчас
 "
                     />
 
@@ -100,7 +100,7 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"
                                 android:textSize="64sp"
-                                tools:text="+"
+                                android:text="+"
                                 android:layout_marginLeft="@dimen/defaultMargin20dp"
                                 android:layout_marginStart="@dimen/defaultMargin20dp" />
 
@@ -110,7 +110,7 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"
                                 android:textSize="64sp"
-                                tools:text="23" />
+                                android:text="23" />
 
                         </LinearLayout>
 
@@ -137,7 +137,7 @@
                                 android:layout_marginStart="@dimen/defaultMargin20dp"
                                 android:gravity="end"
                                 android:textSize="32sp"
-                                tools:text="+" />
+                                android:text="+" />
 
                             <TextView
                                 android:id="@+id/temperatureSensedInfo"
@@ -145,7 +145,7 @@
                                 android:layout_height="match_parent"
                                 android:gravity="end"
                                 android:textSize="32sp"
-                                tools:text="19" />
+                                android:text="19" />
 
                         </LinearLayout>
 
@@ -177,7 +177,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:textColor="@color/black"
-                            tools:text="68%" />
+                            android:text="68%" />
 
                         <TextView
                             android:layout_width="80dp"
@@ -193,7 +193,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:textColor="@color/black"
-                            tools:text="@string/wind" />
+                            android:text="@string/wind" />
 
 
 
@@ -237,7 +237,7 @@
                 android:layout_marginLeft="@dimen/margin_15_dp"
                 android:layout_marginStart="@dimen/margin_15_dp"
                 android:gravity="center_vertical"
-                tools:text="Day Time"
+                android:text="Day Time"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -263,7 +263,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
                 android:gravity="center_vertical"
-                tools:text="+18"
+                android:text="+18"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -278,7 +278,7 @@
                 android:layout_marginRight="@dimen/margin_15_dp"
                 android:layout_marginEnd="15dp"
                 android:gravity="center_vertical"
-                tools:text="+15"
+                android:text="+15"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

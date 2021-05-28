@@ -73,7 +73,7 @@ class DetailsFragment : Fragment() {
             loadingLayout.visibility = View.GONE
             val city = weatherBundle.city
             cityName.text = city.name
-            forecastDate.text = weatherDTO.forecast.date
+            forecastDate.text = weatherDTO.forecast?.date
 
             val windInfoStr: String = weatherDTO.fact?.wind_speed + " м/с"
             windInfo.text = windInfoStr
