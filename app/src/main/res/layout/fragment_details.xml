@@ -30,12 +30,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
+
+
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+
 
 
 
@@ -169,6 +173,15 @@
             android:textColor="@color/black"
             android:textSize="24sp"
             android:text="Погода на ближайшие дни" />
+        <TextView
+            android:id="@+id/yandex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Яндекс.Погода"
+            android:textColor="@color/black"
+            android:layout_margin="5dp"
+            android:layout_gravity="end"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
