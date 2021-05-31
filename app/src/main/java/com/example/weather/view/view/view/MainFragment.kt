@@ -1,10 +1,8 @@
 package com.example.weather.view.view.view
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.weather.R
@@ -46,7 +44,7 @@ class MainFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putParcelable(DetailsFragment.BUNDLE_EXTRA, weather)
                 manager.beginTransaction()
-                    .replace(R.id.container, DetailsFragment.newInstance(bundle))
+                    .replace(R.id.activityContainer, DetailsFragment.newInstance(bundle))
                     .addToBackStack(null)
                     .commitAllowingStateLoss()
             }
@@ -110,6 +108,7 @@ class MainFragment : Fragment() {
             }
         }
     }
+
 
     companion object {
         @JvmStatic

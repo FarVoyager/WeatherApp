@@ -69,7 +69,7 @@ class DetailsFragment : Fragment() {
     //метод для отображения данных погоды на экране
     private fun displayWeather(weatherDTO: WeatherDTO) {
         binding.apply {
-            container.visibility = View.VISIBLE
+            fragmentContainer.visibility = View.VISIBLE
             loadingLayout.visibility = View.GONE
             val city = weatherBundle.city
             cityName.text = city.name
