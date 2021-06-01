@@ -1,10 +1,14 @@
 package com.example.weather.view.view.experiments
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.*
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.AppCompatTextView
 import com.example.weather.R
@@ -12,17 +16,30 @@ import com.example.weather.databinding.FragmentThreadsBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+const val TEST_BROADCAST_INTENT_FILTER = "TEST BROADCAST INTENT FILTER"
+const val THREADS_FRAGMENT_BROADCAST_EXTRA = "THREADS FRAGMENT EXTRA"
 
 class ThreadsFragment : Fragment() {
 
     private var _binding: FragmentThreadsBinding? = null
     private val binding get() = _binding!!
-
     private var counterThread = 0
+
+    //Создаём свой BroadcastReceiver (получатель широковещательного сообщения)
+    private val testReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        //Достаём данные из интента
+        override fun onReceive(context: Context, intent: Intent?) {
+            intent?.getStringExtra(THREADS_FRAGMENT_BROADCAST_EXTRA)?.let {
+                addView(context, it)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        context?.registerReceiver(testReceiver, IntentFilter(TEST_BROADCAST_INTENT_FILTER))
     }
 
     override fun onCreateView(
@@ -35,6 +52,9 @@ class ThreadsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //Service with BroadCast button
+        initServiceWithBroadcastButton()
 
         //Handler_Thread button
         val handlerThread = HandlerThread("HandlerThread")
@@ -84,6 +104,7 @@ class ThreadsFragment : Fragment() {
             }.start()
         }
 
+        //Service button
         binding.serviceButton.setOnClickListener {
             context?.let {
                 it.startService(
@@ -107,7 +128,25 @@ class ThreadsFragment : Fragment() {
             diffInSec = TimeUnit.MILLISECONDS.toSeconds(diffInMs)
         } while (diffInSec < seconds)
         return diffInSec.toString()
+    }
 
+    private fun addView(context: Context, textToShow: String) {
+        binding.mainContainer.addView(AppCompatTextView(context).apply {
+            text = textToShow
+            textSize = resources.getDimension(R.dimen.main_container_text_size)
+        })
+    }
+
+    private fun initServiceWithBroadcastButton() {
+        binding.serviceWithBroadcastButton.setOnClickListener {
+            context?.startService(
+                Intent(context, MainService::class.java)
+                    .putExtra(
+                        MAIN_SERVICE_INT_EXTRA,
+                        binding.editText.text.toString().toInt()
+                    )
+            )
+        }
     }
 
     companion object {
@@ -129,5 +168,10 @@ class ThreadsFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        context?.unregisterReceiver(testReceiver)
+        super.onDestroy()
     }
 }

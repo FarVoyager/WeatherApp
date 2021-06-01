@@ -6,11 +6,14 @@ import android.util.Log
 
 private const val TAG = "MainServiceTAG"
 const val MAIN_SERVICE_STRING_EXTRA = "MainServiceExtra"
+const val MAIN_SERVICE_INT_EXTRA = "MainServiceIntExtra"
 
 class MainService(name: String = "MainService") : IntentService(name) {
 
     override fun onHandleIntent(intent: Intent?) {
-    createLogMessage("onHandleIntent ${intent?.getStringExtra(MAIN_SERVICE_STRING_EXTRA)}")
+        sendBack(intent?.getIntExtra(MAIN_SERVICE_INT_EXTRA, 0).toString())
+
+        createLogMessage("onHandleIntent ${intent?.getStringExtra(MAIN_SERVICE_STRING_EXTRA)}")
     }
 
     override fun onCreate() {
@@ -31,6 +34,13 @@ class MainService(name: String = "MainService") : IntentService(name) {
     //выводим уведомление в строке состояния
     private fun createLogMessage(message: String) {
         Log.d(TAG, message)
+    }
+
+    //Отправка уведомления о завершении сервиса
+    private fun sendBack(result: String) {
+        val broadCastIntent = Intent(TEST_BROADCAST_INTENT_FILTER)
+        broadCastIntent.putExtra(THREADS_FRAGMENT_BROADCAST_EXTRA, result)
+        sendBroadcast(broadCastIntent)
     }
 
 }

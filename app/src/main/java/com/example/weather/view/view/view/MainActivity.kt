@@ -1,10 +1,13 @@
 package com.example.weather.view.view.view
 
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.example.weather.R
+import com.example.weather.view.view.experiments.MainBroadcastReceiver
 import com.example.weather.view.view.experiments.ThreadsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -14,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
         //переходим на фрагмент MainFragment при создании активити
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -41,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
 
 }
