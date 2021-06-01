@@ -18,7 +18,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".view.view.model.DetailsService" />
+        <receiver android:name=".view.view.model.ExampleBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".view.view.model.DetailsService"/>
     </application>
 
 </manifest>
