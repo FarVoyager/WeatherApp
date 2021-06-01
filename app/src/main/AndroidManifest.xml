@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".view.view.experiments.MainService"/>
+        <service android:name=".view.view.model.DetailsService" />
     </application>
 
 </manifest>

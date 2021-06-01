@@ -100,7 +100,7 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"
                                 android:textSize="64sp"
-                                android:text="+"
+                                tools:text="+"
                                 android:layout_marginLeft="@dimen/defaultMargin20dp"
                                 android:layout_marginStart="@dimen/defaultMargin20dp" />
 
@@ -137,7 +137,7 @@
                                 android:layout_marginStart="@dimen/defaultMargin20dp"
                                 android:gravity="end"
                                 android:textSize="32sp"
-                                android:text="+" />
+                                tools:text="+" />
 
                             <TextView
                                 android:id="@+id/temperatureSensedInfo"

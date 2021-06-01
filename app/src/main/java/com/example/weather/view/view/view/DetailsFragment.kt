@@ -1,6 +1,9 @@
 package com.example.weather.view.view.view
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,11 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
-import com.example.weather.view.view.model.Weather
-import com.example.weather.view.view.model.WeatherDTO
-import com.example.weather.view.view.model.WeatherLoader
+import com.example.weather.view.view.model.*
 
 const val DETAILS_INTENT_FILTER = "DETAILS INTENT FILTER"
 const val DETAILS_LOAD_RESULT_EXTRA = "LOAD RESULT"
@@ -26,6 +28,8 @@ const val DETAILS_REQUEST_ERROR_EXTRA = "REQUEST ERROR"
 const val DETAILS_REQUEST_ERROR_MESSAGE_EXTRA = "REQUEST ERROR MESSAGE"
 const val DETAILS_URL_MALFORMED_EXTRA = "URL MALFORMED"
 const val DETAILS_RESPONSE_SUCCESS_EXTRA = "RESPONSE SUCCESS"
+const val DETAILS_HUMIDITY_EXTRA = "TEMPERATURE"
+const val DETAILS_WINDSPEED_EXTRA = "TEMPERATURE"
 const val DETAILS_TEMP_EXTRA = "TEMPERATURE"
 const val DETAILS_FEELS_LIKE_EXTRA = "FEELS LIKE"
 const val DETAILS_CONDITION_EXTRA = "CONDITION"
@@ -39,6 +43,41 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
+
+    private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.getStringExtra(DETAILS_LOAD_RESULT_EXTRA)) {
+                DETAILS_INTENT_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_DATA_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_RESPONSE_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_REQUEST_ERROR_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_REQUEST_ERROR_MESSAGE_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_URL_MALFORMED_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_RESPONSE_SUCCESS_EXTRA -> displayWeather(
+                    WeatherDTO(
+                        FactDTO(
+                            intent.getIntExtra(DETAILS_TEMP_EXTRA, TEMP_INVALID),
+                            intent.getIntExtra(DETAILS_FEELS_LIKE_EXTRA, FEELS_LIKE_INVALID),
+                            intent.getStringExtra(DETAILS_HUMIDITY_EXTRA),
+                            intent.getStringExtra(DETAILS_WINDSPEED_EXTRA),
+                            intent.getStringExtra(DETAILS_CONDITION_EXTRA)
+                        )
+                    )
+                )
+                else -> TODO(PROCESS_ERROR)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            LocalBroadcastManager.getInstance(it).registerReceiver(
+                loadResultsReceiver,
+                IntentFilter(DETAILS_INTENT_FILTER)
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,9 +107,7 @@ class DetailsFragment : Fragment() {
         //элвис в данном случае присвоит weatherBundle значение по города умолчанию если бандл будет null
         weatherBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Weather()
         //экран заполняется данными из только что взятого из Bundle экземпляра класса Weather
-        binding.loadingLayout.visibility = View.VISIBLE
-        val loader = WeatherLoader(onLoadListener, weatherBundle.city.lat, weatherBundle.city.lon)
-        loader.loadWeather()
+        getWeather()
 
         //выполняем требование для использования API Яндекс.Погоды
         //при нажатии на Яндекс.Погода открывается ее сайт
@@ -81,34 +118,56 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    private fun getWeather() {
+        binding.loadingLayout.visibility = View.VISIBLE
+        context?.startService(Intent(context, DetailsService::class.java).apply {
+            putExtra(
+                LATITUDE_EXTRA,
+                weatherBundle.city.lat
+            )
+            putExtra(
+                LONGITUDE_EXTRA,
+                weatherBundle.city.lon
+            )
+        })
+
+    }
+
     //метод для отображения данных погоды на экране
     private fun displayWeather(weatherDTO: WeatherDTO) {
-        binding.apply {
-            fragmentContainer.visibility = View.VISIBLE
-            loadingLayout.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
+        binding.loadingLayout.visibility = View.GONE
+
+        val fact = weatherDTO.fact
+        val temp = fact!!.temp
+        val feelsLike = fact.feels_like
+        val humidity = fact.humidity
+        val windSpeed = fact.wind_speed
+        val condition = fact.condition
+        if (temp == TEMP_INVALID || feelsLike == FEELS_LIKE_INVALID || condition == null || humidity == null || windSpeed == null) {
+            TODO(PROCESS_ERROR)
+        } else {
             val city = weatherBundle.city
-            cityName.text = city.name
-            forecastDate.text = weatherDTO.forecast?.date
+            binding.cityName.text = city.name
 
-            val windInfoStr: String = weatherDTO.fact?.wind_speed + " м/с"
-            windInfo.text = windInfoStr
-            val humidityInfoStr: String = weatherDTO.fact?.humidity + "%"
-            humidityInfo.text = humidityInfoStr
-            temperatureFactInfo.text = weatherDTO.fact?.temp.toString()
-            temperatureSensedInfo.text = weatherDTO.fact?.feels_like.toString()
+            binding.temperatureFactInfo.text = temp.toString()
+            binding.temperatureSensedInfo.text = feelsLike.toString()
+            binding.windInfo.text = windSpeed.toString()
+            binding.humidityInfo.text = humidity.toString()
+        }
 
-            if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
-                pointerFact.text = "+"
-                pointerSensed.text = "+"
-            } else if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp < 0) {
-                pointerFact.text = "-"
-                pointerSensed.text = "-"
-            } else {
-                pointerFact.text = ""
-                pointerSensed.text = ""
-            }
+//            if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
+//                pointerFact.text = "+"
+//                pointerSensed.text = "+"
+//            } else if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp < 0) {
+//                pointerFact.text = "-"
+//                pointerSensed.text = "-"
+//            } else {
+//                pointerFact.text = ""
+//                pointerSensed.text = ""
+//            }
 
-            when (weatherDTO.fact?.condition) {
+            when (condition) {
                 "clear" -> {
                     binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
                 }
@@ -122,7 +181,7 @@ class DetailsFragment : Fragment() {
                     binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
                 }
             }
-        }
+
     }
 
 
@@ -141,6 +200,18 @@ class DetailsFragment : Fragment() {
             //и возвращаем его
             return fragment
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDestroy() {
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(loadResultsReceiver)
+        }
+        super.onDestroy()
     }
 
 

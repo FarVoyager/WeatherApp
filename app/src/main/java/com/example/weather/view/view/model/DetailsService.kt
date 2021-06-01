@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.weather.BuildConfig
+import com.example.weather.view.view.view.*
 import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -79,21 +80,23 @@ class DetailsService(name: String = "DetailsService") : IntentService(name) {
         if (fact == null) {
             onEmptyResponse()
         } else {
-            onSuccessResponse(fact.temp, fact.feels_like, fact.condition, fact.humidity, fact.wind_speed)
+            onSuccessResponse(fact.temp, fact.feels_like, fact.humidity, fact.wind_speed, fact.condition)
         }
     }
 
-    private fun onSuccessResponse(temp: Int?, feelsLike: Int?, condition: String?, humidity: String?, wind_speed: String?) {
+    private fun onSuccessResponse(temp: Int?, feelsLike: Int?, humidity: String?, wind_speed: String?, condition: String?) {
         putLoadResult(DETAILS_RESPONSE_SUCCESS_EXTRA)
         broadcastIntent.putExtra(DETAILS_TEMP_EXTRA, temp)
         broadcastIntent.putExtra(DETAILS_FEELS_LIKE_EXTRA, feelsLike)
-        broadcastIntent.putExtra(DETAILS_CONDITION_EXTRA, condition)
         broadcastIntent.putExtra(DETAILS_HUMIDITY_EXTRA, humidity)
         broadcastIntent.putExtra(DETAILS_WINDSPEED_EXTRA, wind_speed)
+        broadcastIntent.putExtra(DETAILS_CONDITION_EXTRA, condition)
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
     }
 
     private fun onMalformedURL() {
-        putLoadResult(DETAILS_URL_MALFORMED_EXTRA)_EXTRA)
+        putLoadResult(DETAILS_URL_MALFORMED_EXTRA)
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
     }
 
