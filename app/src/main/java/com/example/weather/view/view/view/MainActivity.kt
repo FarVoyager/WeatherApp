@@ -7,8 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.example.weather.R
-import com.example.weather.view.view.experiments.MainBroadcastReceiver
-import com.example.weather.view.view.experiments.ThreadsFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,27 +25,4 @@ class MainActivity : AppCompatActivity() {
                 .commitNow()
         }
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_screen_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_threads -> {
-                supportFragmentManager.apply {
-                    beginTransaction()
-                        .replace(R.id.activityContainer, ThreadsFragment.newInstance())
-                        .addToBackStack(null)
-                        .commitAllowingStateLoss()
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-
-
 }
