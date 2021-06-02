@@ -66,6 +66,7 @@ class DetailsService(name: String = "DetailsService") : IntentService(name) {
                 urlConnection.disconnect()
             }
         } catch (e: MalformedURLException) {
+            e.printStackTrace()
             onMalformedURL()
         }
     }
