@@ -51,16 +51,6 @@ class DetailsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        context?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(
-                loadResultsReceiver,
-                IntentFilter(DETAILS_INTENT_FILTER)
-            )
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -183,74 +173,4 @@ class DetailsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    override fun onDestroy() {
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(loadResultsReceiver)
-        }
-        super.onDestroy()
-    }
-
-
-    //реализуем ресивер
-    private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.getStringExtra(DETAILS_LOAD_RESULT_EXTRA)) {
-                DETAILS_INTENT_EMPTY_EXTRA -> Toast.makeText(
-                    context,
-                    "Ошибка: пустой интент",
-                    Toast.LENGTH_LONG
-                ).show()
-                DETAILS_DATA_EMPTY_EXTRA -> Toast.makeText(
-                    context,
-                    "Ошибка: пустые координаты",
-                    Toast.LENGTH_LONG
-                ).show()
-                DETAILS_RESPONSE_EMPTY_EXTRA -> Toast.makeText(
-                    context,
-                    "Ошибка: пустой DTO",
-                    Toast.LENGTH_LONG
-                ).show()
-                DETAILS_URL_MALFORMED_EXTRA -> Toast.makeText(
-                    context,
-                    "Ошибка: неверный URL",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                DETAILS_RESPONSE_SUCCESS_EXTRA -> displayWeather(
-                    WeatherDTO(
-                        FactDTO(
-                            intent.getIntExtra(DETAILS_TEMP_EXTRA, TEMP_INVALID),
-                            intent.getIntExtra(DETAILS_FEELS_LIKE_EXTRA, FEELS_LIKE_INVALID),
-                            intent.getStringExtra(DETAILS_HUMIDITY_EXTRA),
-                            intent.getStringExtra(DETAILS_WINDSPEED_EXTRA),
-                            intent.getStringExtra(DETAILS_CONDITION_EXTRA)
-                        )
-                    )
-                )
-                else -> Toast.makeText(context, "Неизвестная ошибка", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-
-    private val onLoadListener: WeatherLoader.WeatherModelListener =
-        object : WeatherLoader.WeatherModelListener {
-            override fun onLoaded(weatherDTO: WeatherDTO) {
-                displayWeather(weatherDTO)
-            }
-
-            override fun onFailed(throwable: Throwable) {
-                Log.e(null, "Ошибка", throwable)
-                Toast.makeText(context, "Error loading data", Toast.LENGTH_LONG).show()
-            }
-        }
-
-
-
-
-
-
-
-
 }
