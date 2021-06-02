@@ -45,6 +45,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
 }
 
 dependencies {
@@ -69,6 +70,7 @@ dependencies {
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

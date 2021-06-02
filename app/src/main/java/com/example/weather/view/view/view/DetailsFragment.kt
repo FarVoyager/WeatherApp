@@ -7,6 +7,8 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,9 +17,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.weather.BuildConfig
 import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.view.view.model.*
+import com.google.gson.Gson
+import okhttp3.*
+import java.io.IOException
 
 const val DETAILS_INTENT_FILTER = "DETAILS INTENT FILTER"
 const val DETAILS_LOAD_RESULT_EXTRA = "LOAD RESULT"
@@ -36,6 +42,7 @@ const val DETAILS_CONDITION_EXTRA = "CONDITION"
 private const val TEMP_INVALID = -100
 private const val FEELS_LIKE_INVALID = -100
 private const val PROCESS_ERROR = "Обработка ошибки"
+private const val MAIN_LINK = "https://api.weather.yandex.ru/v2/informers?"
 
 class DetailsFragment : Fragment() {
 
@@ -43,31 +50,6 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
-
-    //реализуем ресивер
-    private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.getStringExtra(DETAILS_LOAD_RESULT_EXTRA)) {
-                DETAILS_INTENT_EMPTY_EXTRA -> Toast.makeText(context, "Ошибка: пустой интент", Toast.LENGTH_LONG).show()
-                DETAILS_DATA_EMPTY_EXTRA -> Toast.makeText(context, "Ошибка: пустые координаты", Toast.LENGTH_LONG).show()
-                DETAILS_RESPONSE_EMPTY_EXTRA -> Toast.makeText(context, "Ошибка: пустой DTO", Toast.LENGTH_LONG).show()
-                DETAILS_URL_MALFORMED_EXTRA -> Toast.makeText(context, "Ошибка: неверный URL", Toast.LENGTH_LONG).show()
-
-                DETAILS_RESPONSE_SUCCESS_EXTRA -> displayWeather(
-                    WeatherDTO(
-                        FactDTO(
-                            intent.getIntExtra(DETAILS_TEMP_EXTRA, TEMP_INVALID),
-                            intent.getIntExtra(DETAILS_FEELS_LIKE_EXTRA, FEELS_LIKE_INVALID),
-                            intent.getStringExtra(DETAILS_HUMIDITY_EXTRA),
-                            intent.getStringExtra(DETAILS_WINDSPEED_EXTRA),
-                            intent.getStringExtra(DETAILS_CONDITION_EXTRA)
-                        )
-                    )
-                )
-                else -> Toast.makeText(context, "Неизвестная ошибка", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,19 +68,6 @@ class DetailsFragment : Fragment() {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-
-    private val onLoadListener: WeatherLoader.WeatherModelListener =
-        object : WeatherLoader.WeatherModelListener {
-            override fun onLoaded(weatherDTO: WeatherDTO) {
-                displayWeather(weatherDTO)
-            }
-
-            override fun onFailed(throwable: Throwable) {
-                Log.e(null, "Ошибка", throwable)
-                Toast.makeText(context, "Error loading data", Toast.LENGTH_LONG).show()
-            }
-        }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,18 +88,39 @@ class DetailsFragment : Fragment() {
     }
 
     private fun getWeather() {
-        binding.loadingLayout.visibility = View.VISIBLE
-        context?.startService(Intent(context, DetailsService::class.java).apply {
-            putExtra(
-                LATITUDE_EXTRA,
-                weatherBundle.city.lat
-            )
-            putExtra(
-                LONGITUDE_EXTRA,
-                weatherBundle.city.lon
-            )
-        })
 
+        val client = OkHttpClient()
+        //создаем строитель запроса
+        val builder: Request.Builder = Request.Builder()
+        //создаем заголовок запроса
+        builder.header(REQUEST_API_KEY, BuildConfig.WEATHER_API_KEY)
+        //формируем URL
+        builder.url(MAIN_LINK + "lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
+        //создаем запрос
+        val request: Request = builder.build()
+        //ставим запрос в очередь и отправляем
+        val call: Call = client.newCall(request)
+        call.enqueue(object : Callback {
+            val handler: Handler = Handler(Looper.getMainLooper())
+
+            //вызывается если ответ от сервера пришел
+            override fun onResponse(call: Call?, response: Response) {
+                val serverResponse: String? = response.body()?.string()
+
+                if (response.isSuccessful && serverResponse != null) {
+                    handler.post {
+                        displayWeather(Gson().fromJson(serverResponse, WeatherDTO::class.java))
+                    }
+                } else {
+                    Toast.makeText(context, "Ошибка: response error", Toast.LENGTH_LONG).show()
+                }
+            }
+            //вызывается при сбое в процессе запроса на сервер
+            override fun onFailure(call: Call, e: IOException) {
+                Toast.makeText(context, "Ошибка: response failed", Toast.LENGTH_LONG).show()
+                e.printStackTrace()
+            }
+        })
     }
 
     //метод для отображения данных погоды на экране
@@ -145,7 +135,7 @@ class DetailsFragment : Fragment() {
         val windSpeed = fact?.wind_speed
         val condition = fact?.condition
 
-        if (temp == FEELS_LIKE_INVALID || feelsLike == FEELS_LIKE_INVALID || condition == null || humidity == null || windSpeed == null) {
+        if (temp == FEELS_LIKE_INVALID || feelsLike == FEELS_LIKE_INVALID || condition.isNullOrEmpty() || humidity == null || windSpeed == null) {
             Toast.makeText(context, "Ошибка значений данных", Toast.LENGTH_LONG).show()
         } else {
             val city = weatherBundle.city
@@ -159,39 +149,26 @@ class DetailsFragment : Fragment() {
             binding.humidityInfo.text = humidityInfoString
         }
 
-            if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
-                binding.pointerFact.text = "+"
-                binding.pointerSensed.text = "+"
-            } else {
-                binding.pointerFact.text = ""
-                binding.pointerSensed.text = ""
-            }
+        if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
+            binding.pointerFact.text = "+"
+            binding.pointerSensed.text = "+"
+        } else {
+            binding.pointerFact.text = ""
+            binding.pointerSensed.text = ""
+        }
 
-            when (condition) {
-                "clear" -> {
-                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
-                }
-                "cloudy" -> {
-                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
-                }
-                "overcast" -> {
-                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
-                }
-                else -> {
-                    binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
-                }
-            }
-
+        when (condition) {
+            "clear" -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
+            "cloudy" -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
+            "overcast" -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
+            else -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
+        }
     }
-
 
     //Реализация Parcelable, в Gradle был прописан     id 'kotlin-parcelize'
     companion object {
         //ключ для сохранения и загрузки элемента Weather
         const val BUNDLE_EXTRA = "weather"
-
-        //метод увеличился из-за парселизации, теперь в него передается Bundle
-        //в который при нажатии на элемент списка был передан Weather (это происходит в MainFragment)
         fun newInstance(bundle: Bundle): DetailsFragment {
             //создается пустой фрагмент Details
             val fragment = DetailsFragment()
@@ -213,6 +190,67 @@ class DetailsFragment : Fragment() {
         }
         super.onDestroy()
     }
+
+
+    //реализуем ресивер
+    private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.getStringExtra(DETAILS_LOAD_RESULT_EXTRA)) {
+                DETAILS_INTENT_EMPTY_EXTRA -> Toast.makeText(
+                    context,
+                    "Ошибка: пустой интент",
+                    Toast.LENGTH_LONG
+                ).show()
+                DETAILS_DATA_EMPTY_EXTRA -> Toast.makeText(
+                    context,
+                    "Ошибка: пустые координаты",
+                    Toast.LENGTH_LONG
+                ).show()
+                DETAILS_RESPONSE_EMPTY_EXTRA -> Toast.makeText(
+                    context,
+                    "Ошибка: пустой DTO",
+                    Toast.LENGTH_LONG
+                ).show()
+                DETAILS_URL_MALFORMED_EXTRA -> Toast.makeText(
+                    context,
+                    "Ошибка: неверный URL",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                DETAILS_RESPONSE_SUCCESS_EXTRA -> displayWeather(
+                    WeatherDTO(
+                        FactDTO(
+                            intent.getIntExtra(DETAILS_TEMP_EXTRA, TEMP_INVALID),
+                            intent.getIntExtra(DETAILS_FEELS_LIKE_EXTRA, FEELS_LIKE_INVALID),
+                            intent.getStringExtra(DETAILS_HUMIDITY_EXTRA),
+                            intent.getStringExtra(DETAILS_WINDSPEED_EXTRA),
+                            intent.getStringExtra(DETAILS_CONDITION_EXTRA)
+                        )
+                    )
+                )
+                else -> Toast.makeText(context, "Неизвестная ошибка", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+
+    private val onLoadListener: WeatherLoader.WeatherModelListener =
+        object : WeatherLoader.WeatherModelListener {
+            override fun onLoaded(weatherDTO: WeatherDTO) {
+                displayWeather(weatherDTO)
+            }
+
+            override fun onFailed(throwable: Throwable) {
+                Log.e(null, "Ошибка", throwable)
+                Toast.makeText(context, "Error loading data", Toast.LENGTH_LONG).show()
+            }
+        }
+
+
+
+
+
+
 
 
 }

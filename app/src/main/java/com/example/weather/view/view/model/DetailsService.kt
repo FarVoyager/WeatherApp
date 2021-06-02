@@ -20,7 +20,7 @@ const val LATITUDE_EXTRA = "Latitude"
 const val LONGITUDE_EXTRA = "Longitude"
 private const val REQUEST_GET = "GET"
 private const val REQUEST_TIMEOUT = 10000
-private const val REQUEST_API_KEY = "X-Yandex-API-Key"
+const val REQUEST_API_KEY = "X-Yandex-API-Key"
 
 
 class DetailsService(name: String = "DetailsService") : IntentService(name) {
