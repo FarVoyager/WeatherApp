@@ -28,8 +28,8 @@ const val DETAILS_REQUEST_ERROR_EXTRA = "REQUEST ERROR"
 const val DETAILS_REQUEST_ERROR_MESSAGE_EXTRA = "REQUEST ERROR MESSAGE"
 const val DETAILS_URL_MALFORMED_EXTRA = "URL MALFORMED"
 const val DETAILS_RESPONSE_SUCCESS_EXTRA = "RESPONSE SUCCESS"
-const val DETAILS_HUMIDITY_EXTRA = "TEMPERATURE"
-const val DETAILS_WINDSPEED_EXTRA = "TEMPERATURE"
+const val DETAILS_HUMIDITY_EXTRA = "HUMIDITY"
+const val DETAILS_WINDSPEED_EXTRA = "WINDSPEED"
 const val DETAILS_TEMP_EXTRA = "TEMPERATURE"
 const val DETAILS_FEELS_LIKE_EXTRA = "FEELS LIKE"
 const val DETAILS_CONDITION_EXTRA = "CONDITION"
@@ -139,12 +139,13 @@ class DetailsFragment : Fragment() {
         binding.loadingLayout.visibility = View.GONE
 
         val fact = weatherDTO.fact
-        val temp = fact!!.temp
-        val feelsLike = fact.feels_like
-        val humidity = fact.humidity
-        val windSpeed = fact.wind_speed
-        val condition = fact.condition
-        if (temp == TEMP_INVALID || feelsLike == FEELS_LIKE_INVALID || condition == null || humidity == null || windSpeed == null) {
+        val temp = fact?.temp
+        val feelsLike = fact?.feels_like
+        val humidity = fact?.humidity
+        val windSpeed = fact?.wind_speed
+        val condition = fact?.condition
+
+        if (feelsLike == FEELS_LIKE_INVALID || condition == null || humidity == null || windSpeed == null) {
             TODO(PROCESS_ERROR)
         } else {
             val city = weatherBundle.city
@@ -152,20 +153,17 @@ class DetailsFragment : Fragment() {
 
             binding.temperatureFactInfo.text = temp.toString()
             binding.temperatureSensedInfo.text = feelsLike.toString()
-            binding.windInfo.text = windSpeed.toString()
-            binding.humidityInfo.text = humidity.toString()
+            binding.windInfo.text = windSpeed.toString() + " м/с"
+            binding.humidityInfo.text = humidity.toString() + "%"
         }
 
-//            if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
-//                pointerFact.text = "+"
-//                pointerSensed.text = "+"
-//            } else if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp < 0) {
-//                pointerFact.text = "-"
-//                pointerSensed.text = "-"
-//            } else {
-//                pointerFact.text = ""
-//                pointerSensed.text = ""
-//            }
+            if (weatherDTO.fact.temp != null && weatherDTO.fact.temp > 0) {
+                binding.pointerFact.text = "+"
+                binding.pointerSensed.text = "+"
+            } else {
+                binding.pointerFact.text = ""
+                binding.pointerSensed.text = ""
+            }
 
             when (condition) {
                 "clear" -> {

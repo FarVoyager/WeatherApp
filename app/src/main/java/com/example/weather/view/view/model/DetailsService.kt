@@ -61,7 +61,7 @@ class DetailsService(name: String = "DetailsService") : IntentService(name) {
                 )
                 onResponse(weatherDTO)
             } catch (e: Exception) {
-                onErrorRequest(e.message ?: "Empty Error")
+                e.printStackTrace()
             } finally {
                 urlConnection.disconnect()
             }
@@ -84,13 +84,14 @@ class DetailsService(name: String = "DetailsService") : IntentService(name) {
         }
     }
 
-    private fun onSuccessResponse(temp: Int?, feelsLike: Int?, humidity: String?, wind_speed: String?, condition: String?) {
+    private fun onSuccessResponse(temp: Int?, feelsLike: Int?, humidity: String?, windSpeed: String?, condition: String?) {
         putLoadResult(DETAILS_RESPONSE_SUCCESS_EXTRA)
         broadcastIntent.putExtra(DETAILS_TEMP_EXTRA, temp)
         broadcastIntent.putExtra(DETAILS_FEELS_LIKE_EXTRA, feelsLike)
         broadcastIntent.putExtra(DETAILS_HUMIDITY_EXTRA, humidity)
-        broadcastIntent.putExtra(DETAILS_WINDSPEED_EXTRA, wind_speed)
+        broadcastIntent.putExtra(DETAILS_WINDSPEED_EXTRA, windSpeed)
         broadcastIntent.putExtra(DETAILS_CONDITION_EXTRA, condition)
+
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent)
     }
