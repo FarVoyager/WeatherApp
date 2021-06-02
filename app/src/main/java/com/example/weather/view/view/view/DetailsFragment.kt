@@ -44,15 +44,15 @@ class DetailsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
 
+    //реализуем ресивер
     private val loadResultsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.getStringExtra(DETAILS_LOAD_RESULT_EXTRA)) {
-                DETAILS_INTENT_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_DATA_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_RESPONSE_EMPTY_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_REQUEST_ERROR_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_REQUEST_ERROR_MESSAGE_EXTRA -> TODO(PROCESS_ERROR)
-                DETAILS_URL_MALFORMED_EXTRA -> TODO(PROCESS_ERROR)
+                DETAILS_INTENT_EMPTY_EXTRA -> Toast.makeText(context, "Ошибка: пустой интент", Toast.LENGTH_LONG).show()
+                DETAILS_DATA_EMPTY_EXTRA -> Toast.makeText(context, "Ошибка: пустые координаты", Toast.LENGTH_LONG).show()
+                DETAILS_RESPONSE_EMPTY_EXTRA -> Toast.makeText(context, "Ошибка: пустой DTO", Toast.LENGTH_LONG).show()
+                DETAILS_URL_MALFORMED_EXTRA -> Toast.makeText(context, "Ошибка: неверный URL", Toast.LENGTH_LONG).show()
+
                 DETAILS_RESPONSE_SUCCESS_EXTRA -> displayWeather(
                     WeatherDTO(
                         FactDTO(
@@ -64,7 +64,7 @@ class DetailsFragment : Fragment() {
                         )
                     )
                 )
-                else -> TODO(PROCESS_ERROR)
+                else -> Toast.makeText(context, "Неизвестная ошибка", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -145,19 +145,21 @@ class DetailsFragment : Fragment() {
         val windSpeed = fact?.wind_speed
         val condition = fact?.condition
 
-        if (feelsLike == FEELS_LIKE_INVALID || condition == null || humidity == null || windSpeed == null) {
-            TODO(PROCESS_ERROR)
+        if (temp == FEELS_LIKE_INVALID || feelsLike == FEELS_LIKE_INVALID || condition == null || humidity == null || windSpeed == null) {
+            Toast.makeText(context, "Ошибка значений данных", Toast.LENGTH_LONG).show()
         } else {
             val city = weatherBundle.city
             binding.cityName.text = city.name
 
             binding.temperatureFactInfo.text = temp.toString()
             binding.temperatureSensedInfo.text = feelsLike.toString()
-            binding.windInfo.text = windSpeed.toString() + " м/с"
-            binding.humidityInfo.text = humidity.toString() + "%"
+            val windInfoString = "$windSpeed м/с"
+            binding.windInfo.text = windInfoString
+            val humidityInfoString = "$humidity %"
+            binding.humidityInfo.text = humidityInfoString
         }
 
-            if (weatherDTO.fact.temp != null && weatherDTO.fact.temp > 0) {
+            if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
                 binding.pointerFact.text = "+"
                 binding.pointerSensed.text = "+"
             } else {
