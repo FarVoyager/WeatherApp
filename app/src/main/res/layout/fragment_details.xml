@@ -204,6 +204,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -286,7 +287,10 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>

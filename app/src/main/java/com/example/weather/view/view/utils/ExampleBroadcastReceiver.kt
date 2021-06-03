@@ -1,4 +1,4 @@
-package com.example.weather.view.view.model
+package com.example.weather.view.view.utils
 
 import android.content.BroadcastReceiver
 import android.content.Context

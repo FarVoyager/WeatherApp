@@ -18,18 +18,19 @@ private const val SERVER_ERROR = "Ошибка сервера"
 private const val REQUEST_ERROR = "Ошибка запроса на сервер"
 private const val CORRUPTED_DATA = "Неполные данные"
 
-class DetailsViewModel(
+class DetailsViewModel( //открытие коструктора
+    //Property #1. LiveData позволяет подписываться на события элемента типа <?> и уведомлять о его изменении
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
+    //Property #2
     private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource())
+//закрытие конструктора
 ) : ViewModel() {
+    //тело класса
 
-//    fun getLiveData() = detailsLiveData
 
     fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
-        detailsLiveData.value = AppState.Loading
-        detailsRepositoryImpl.getWeatherDetailsFromServer(lat, lon, callBack)
-        println(lat.toString() + " HUI!")
-        println(lon.toString() + " HUI!")
+        detailsLiveData.value = AppState.Loading  //обновляем состояние AppState, liveData слушает
+        detailsRepositoryImpl.getWeatherDetailsFromServer(lat, lon, callBack)  // через интерфейс вызываем метод получения данных у API
     }
 
     private val callBack = object :

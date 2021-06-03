@@ -14,11 +14,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import coil.api.load
+import com.bumptech.glide.Glide
 import com.example.weather.BuildConfig
 import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
@@ -26,7 +29,9 @@ import com.example.weather.view.view.model.*
 import com.example.weather.view.view.viewmodel.AppState
 import com.example.weather.view.view.viewmodel.DetailsViewModel
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import okhttp3.*
+import java.io.File
 import java.io.IOException
 
 
@@ -36,8 +41,9 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
-    private val viewModel: DetailsViewModel by lazy {
-        ViewModelProvider(this).get(DetailsViewModel::class.java)
+
+    private val viewModel: DetailsViewModel by lazy {   //используем ленивую инициализацию чтобы предотвратить утечки памяти
+        ViewModelProvider(this).get(DetailsViewModel::class.java)  //привязываем viewModel  ЖЦ фрагмента (this)
     }
 
     override fun onCreateView(
@@ -51,13 +57,19 @@ class DetailsFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //создается переменная типа Weather, которой присваивается сохраненный ранее Weather в Bundle, т.е. город, на который мы нажали
+
+        // загружаем картинку через Picasso
+        val imageView: ImageView = binding.imageView
+        Picasso.get()
+            .load("https://freepngimg.com/download/city/36421-8-city-picture.png").into(imageView)
+
+        //создаем переменную типа Weather, которой присваивается сохраненный ранее Weather в Bundle, т.е. город, на который мы нажали
         //элвис в данном случае присвоит weatherBundle значение по города умолчанию если бандл будет null
         weatherBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Weather()
+
         //экран заполняется данными из только что взятого из Bundle экземпляра класса Weather
-//        getWeather()
         viewModel.detailsLiveData.observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat,weatherBundle.city.lon)
+        viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
 
         //выполняем требование для использования API Яндекс.Погоды
         //при нажатии на Яндекс.Погода открывается ее сайт

@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
+//интерфейс-билдер строки запроса к API
 interface WeatherAPI {
     @GET("v2/informers")
     fun getWeather(
