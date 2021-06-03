@@ -2,8 +2,8 @@ package com.example.weather.view.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weather.view.view.model.Repository
-import com.example.weather.view.view.model.RepositoryImpl
+import com.example.weather.view.view.repository.MainRepository
+import com.example.weather.view.view.repository.MainRepositoryImpl
 import java.lang.Thread.sleep
 
 class MainViewModel(
@@ -11,7 +11,7 @@ class MainViewModel(
     //LiveData позволяет подписаться на изменения состояний класса (AppState)
     private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
     // 2-ой аргумент - RepositoryImpl типа интерфейса Repository
-    private val repositoryImpl: Repository = RepositoryImpl()
+    private val mainRepositoryImpl: MainRepository = MainRepositoryImpl()
 ) : ViewModel() { //класс MainViewModel возвращает объект класса ViewModel
 
     //метод getLiveData просто возвращает 1-ый аргумент
@@ -28,9 +28,9 @@ class MainViewModel(
         Thread {
             sleep(1000)
             liveDataToObserve.postValue(AppState.Success(if (isRussian)
-                repositoryImpl.getWeatherFromLocalSourceRus()
+                mainRepositoryImpl.getWeatherFromLocalSourceRus()
             else
-                repositoryImpl.getWeatherFromLocalSourceWorld()))
+                mainRepositoryImpl.getWeatherFromLocalSourceWorld()))
         }.start()
     }
 }

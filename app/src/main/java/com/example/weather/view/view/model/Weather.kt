@@ -33,8 +33,3 @@ fun getRussianCities() = listOf(
         Weather(City("Казань", "Республика Татарстан", 55.8304307, 49.06608060000008), 23, 20, "57%", "2м/с ЮВ", "sunny"),
     )
 
-fun convertDtoToModel(weatherDTO: WeatherDTO) :List<Weather> {
-    val fact: FactDTO = weatherDTO.fact!!
-    return  listOf(Weather(getDefaultCity(),fact.temp!!, fact.feels_like!!, fact.humidity!!, fact.wind_speed!!, fact?.condition!!))
-}
-

@@ -3,10 +3,10 @@ package com.example.weather.view.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.view.view.model.WeatherDTO
-import com.example.weather.view.view.model.convertDtoToModel
 import com.example.weather.view.view.repository.DetailsRepository
 import com.example.weather.view.view.repository.DetailsRepositoryImpl
 import com.example.weather.view.view.repository.RemoteDataSource
+import com.example.weather.view.view.utils.convertDtoToModel
 import com.google.gson.Gson
 import okhttp3.*
 import java.io.IOException
