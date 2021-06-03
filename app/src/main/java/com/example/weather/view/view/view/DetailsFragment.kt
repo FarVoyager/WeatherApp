@@ -16,11 +16,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.weather.BuildConfig
 import com.example.weather.R
 import com.example.weather.databinding.FragmentDetailsBinding
 import com.example.weather.view.view.model.*
+import com.example.weather.view.view.viewmodel.AppState
+import com.example.weather.view.view.viewmodel.DetailsViewModel
 import com.google.gson.Gson
 import okhttp3.*
 import java.io.IOException
@@ -50,6 +54,9 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
+    private val viewModel: DetailsViewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,7 +73,8 @@ class DetailsFragment : Fragment() {
         //элвис в данном случае присвоит weatherBundle значение по города умолчанию если бандл будет null
         weatherBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Weather()
         //экран заполняется данными из только что взятого из Bundle экземпляра класса Weather
-        getWeather()
+//        getWeather()
+        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
 
         //выполняем требование для использования API Яндекс.Погоды
         //при нажатии на Яндекс.Погода открывается ее сайт
@@ -77,69 +85,82 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    private fun getWeather() {
-
-        val client = OkHttpClient()
-        //создаем строитель запроса
-        val builder: Request.Builder = Request.Builder()
-        //создаем заголовок запроса
-        builder.header(REQUEST_API_KEY, BuildConfig.WEATHER_API_KEY)
-        //формируем URL
-        builder.url(MAIN_LINK + "lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
-        //создаем запрос
-        val request: Request = builder.build()
-        //ставим запрос в очередь и отправляем
-        val call: Call = client.newCall(request)
-        call.enqueue(object : Callback {
-            val handler: Handler = Handler(Looper.getMainLooper())
-
-            //вызывается если ответ от сервера пришел
-            override fun onResponse(call: Call?, response: Response) {
-                val serverResponse: String? = response.body()?.string()
-
-                if (response.isSuccessful && serverResponse != null) {
-                    handler.post {
-                        displayWeather(Gson().fromJson(serverResponse, WeatherDTO::class.java))
-                    }
-                } else {
-                    Toast.makeText(context, "Ошибка: response error", Toast.LENGTH_LONG).show()
-                }
+    private fun renderData(appState: AppState) {
+        when (appState) {
+            is AppState.Success -> {
+                binding.fragmentContainer.visibility = View.VISIBLE
+                binding.loadingLayout.visibility = View.GONE
+                displayWeather(appState.weatherData[0])
             }
-            //вызывается при сбое в процессе запроса на сервер
-            override fun onFailure(call: Call, e: IOException) {
-                Toast.makeText(context, "Ошибка: response failed", Toast.LENGTH_LONG).show()
-                e.printStackTrace()
+            is AppState.Loading -> {
+                binding.fragmentContainer.visibility = View.GONE
+                binding.loadingLayout.visibility = View.VISIBLE
             }
-        })
+            is AppState.Error -> {
+                binding.fragmentContainer.visibility = View.VISIBLE
+                binding.loadingLayout.visibility = View.GONE
+                Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
+//    private fun getWeather() {
+//
+//        val client = OkHttpClient()
+//        //создаем строитель запроса
+//        val builder: Request.Builder = Request.Builder()
+//        //создаем заголовок запроса
+//        builder.header(REQUEST_API_KEY, BuildConfig.WEATHER_API_KEY)
+//        //формируем URL
+//        builder.url(MAIN_LINK + "lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
+//        //создаем запрос
+//        val request: Request = builder.build()
+//        //ставим запрос в очередь и отправляем
+//        val call: Call = client.newCall(request)
+//        call.enqueue(object : Callback {
+//            val handler: Handler = Handler(Looper.getMainLooper())
+//
+//            //вызывается если ответ от сервера пришел
+//            override fun onResponse(call: Call?, response: Response) {
+//                val serverResponse: String? = response.body()?.string()
+//
+//                if (response.isSuccessful && serverResponse != null) {
+//                    handler.post {
+//                        displayWeather(Gson().fromJson(serverResponse, WeatherDTO::class.java))
+//                    }
+//                } else {
+//                    Toast.makeText(context, "Ошибка: response error", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//            //вызывается при сбое в процессе запроса на сервер
+//            override fun onFailure(call: Call, e: IOException) {
+//                Toast.makeText(context, "Ошибка: response failed", Toast.LENGTH_LONG).show()
+//                e.printStackTrace()
+//            }
+//        })
+//    }
+
     //метод для отображения данных погоды на экране
-    private fun displayWeather(weatherDTO: WeatherDTO) {
-        binding.fragmentContainer.visibility = View.VISIBLE
-        binding.loadingLayout.visibility = View.GONE
+    private fun displayWeather(weather: Weather) {
 
-        val fact = weatherDTO.fact
-        val temp = fact?.temp
-        val feelsLike = fact?.feels_like
-        val humidity = fact?.humidity
-        val windSpeed = fact?.wind_speed
-        val condition = fact?.condition
+        val city = weatherBundle.city
+        val temp = weather.temp
+        val feelsLike = weather.feels_like
+        val humidity = weather.humidity
+        val windSpeed = weather.wind
+        val condition = weather.condition
 
-        if (temp == FEELS_LIKE_INVALID || feelsLike == FEELS_LIKE_INVALID || condition.isNullOrEmpty() || humidity == null || windSpeed == null) {
-            Toast.makeText(context, "Ошибка значений данных", Toast.LENGTH_LONG).show()
-        } else {
-            val city = weatherBundle.city
-            binding.cityName.text = city.name
+        binding.cityName.text = city.name
 
-            binding.temperatureFactInfo.text = temp.toString()
-            binding.temperatureSensedInfo.text = feelsLike.toString()
-            val windInfoString = "$windSpeed м/с"
-            binding.windInfo.text = windInfoString
-            val humidityInfoString = "$humidity %"
-            binding.humidityInfo.text = humidityInfoString
-        }
+        binding.temperatureFactInfo.text = temp.toString()
+        binding.temperatureSensedInfo.text = feelsLike.toString()
+        val windInfoString = "$windSpeed м/с"
+        binding.windInfo.text = windInfoString
+        val humidityInfoString = "$humidity %"
+        binding.humidityInfo.text = humidityInfoString
 
-        if (weatherDTO.fact?.temp != null && weatherDTO.fact.temp > 0) {
+
+        if (temp > 0) {
             binding.pointerFact.text = "+"
             binding.pointerSensed.text = "+"
         } else {
