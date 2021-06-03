@@ -1,10 +1,12 @@
 package com.example.weather.view.view.repository
 
-import javax.security.auth.callback.Callback
+import com.example.weather.view.view.model.WeatherDTO
+
 
 class DetailsRepositoryImpl(private val remoteDataSource: RemoteDataSource) : DetailsRepository {
-    override fun getWeatherDetailsFromServer(requestLink: String, callback: okhttp3.Callback) {
-        remoteDataSource.getWeatherDetails(requestLink, callback)
+    override fun getWeatherDetailsFromServer(lat: Double, lon: Double, callback: retrofit2.Callback<WeatherDTO>) {
+        remoteDataSource.getWeatherDetails(lat, lon, callback)
+
     }
 
 }

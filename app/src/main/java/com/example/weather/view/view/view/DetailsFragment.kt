@@ -56,7 +56,8 @@ class DetailsFragment : Fragment() {
         weatherBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Weather()
         //экран заполняется данными из только что взятого из Bundle экземпляра класса Weather
 //        getWeather()
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
+        viewModel.detailsLiveData.observe(viewLifecycleOwner, Observer { renderData(it) })
+        viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat,weatherBundle.city.lon)
 
         //выполняем требование для использования API Яндекс.Погоды
         //при нажатии на Яндекс.Погода открывается ее сайт
@@ -73,6 +74,14 @@ class DetailsFragment : Fragment() {
                 binding.fragmentContainer.visibility = View.VISIBLE
                 binding.loadingLayout.visibility = View.GONE
                 displayWeather(appState.weatherData[0])
+
+                println(appState.weatherData[0].temp.toString() + " HUI")
+                println(appState.weatherData[0].feels_like.toString() + " HUI")
+                println(appState.weatherData[0].humidity + " HUI")
+                println(appState.weatherData[0].wind + " HUI")
+                println(appState.weatherData[0].condition + " HUI")
+
+//                Toast.makeText(context, "SUCCESS", Toast.LENGTH_LONG).show()
             }
             is AppState.Loading -> {
                 binding.fragmentContainer.visibility = View.GONE
@@ -85,42 +94,6 @@ class DetailsFragment : Fragment() {
             }
         }
     }
-
-//    private fun getWeather() {
-//
-//        val client = OkHttpClient()
-//        //создаем строитель запроса
-//        val builder: Request.Builder = Request.Builder()
-//        //создаем заголовок запроса
-//        builder.header(REQUEST_API_KEY, BuildConfig.WEATHER_API_KEY)
-//        //формируем URL
-//        builder.url(MAIN_LINK + "lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
-//        //создаем запрос
-//        val request: Request = builder.build()
-//        //ставим запрос в очередь и отправляем
-//        val call: Call = client.newCall(request)
-//        call.enqueue(object : Callback {
-//            val handler: Handler = Handler(Looper.getMainLooper())
-//
-//            //вызывается если ответ от сервера пришел
-//            override fun onResponse(call: Call?, response: Response) {
-//                val serverResponse: String? = response.body()?.string()
-//
-//                if (response.isSuccessful && serverResponse != null) {
-//                    handler.post {
-//                        displayWeather(Gson().fromJson(serverResponse, WeatherDTO::class.java))
-//                    }
-//                } else {
-//                    Toast.makeText(context, "Ошибка: response error", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//            //вызывается при сбое в процессе запроса на сервер
-//            override fun onFailure(call: Call, e: IOException) {
-//                Toast.makeText(context, "Ошибка: response failed", Toast.LENGTH_LONG).show()
-//                e.printStackTrace()
-//            }
-//        })
-//    }
 
     //метод для отображения данных погоды на экране
     private fun displayWeather(weather: Weather) {

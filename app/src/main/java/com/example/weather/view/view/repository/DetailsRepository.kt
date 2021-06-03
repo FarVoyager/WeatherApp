@@ -1,7 +1,7 @@
 package com.example.weather.view.view.repository
 
-import javax.security.auth.callback.Callback
+import com.example.weather.view.view.model.WeatherDTO
 
 interface DetailsRepository {
-    fun getWeatherDetailsFromServer (requestLink: String, callback: okhttp3.Callback)
+    fun getWeatherDetailsFromServer (lat: Double, lon: Double, callback: retrofit2.Callback<WeatherDTO>)
 }
