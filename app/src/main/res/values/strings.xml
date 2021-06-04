@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Weather</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error">Error</string>
+    <string name="reload">Reload</string>
+    <string name="humidity">Влажность</string>
+    <string name="wind">3 м/с ЮЗ</string>
+    <string name="title">Погода в городе</string>
+    <string name="dayTimeTitle">Погода на ближайшее время</string>
+    <string name="yandexWeatherWidget">Яндекс.Погода</string>
+    <string name="windTitle">Ветер</string>
+    <string name="sensedTitle">Ощущается как</string>
+    <string name="an_image_of_weather_condition">an image of weather condition</string>
+    <string name="threads">threads</string>
+
+
+    <string name="in_main_thread">В главном потоке</string>
+    <string name="from_thread">Из потока %d</string>
+    <string name="in_thread">Выводим в потоке %s</string>
+    <string name="calculate_in_thread">Считаем в потоке %s</string>
+    <string name="my_handler_thread">My_Handler_Thread</string>
+    <string name="hello_from_thread_fragment">Hello from ThreadsFragment</string>
+    <string name="calculate">Расчет</string>
+    <string name="default_number">1</string>
+    <string name="calc_in_thread">Расчет в потоке</string>
+    <string name="handler_thread">Handler_Thread</string>
+    <string name="service">Service</string>
+    <string name="service_broadcast">Service + Broadcast</string>
 </resources>
