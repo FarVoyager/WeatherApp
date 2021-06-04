@@ -17,7 +17,6 @@ class MainFragmentAdapter(private var onItemViewClickListener: MainFragment.OnIt
     private var weatherData: List<Weather> = listOf()
 
     //метод получает на вход List<Weather>
-
     fun setWeather(data: List<Weather>) {
         //присваивает его значение переменной weatherData
         weatherData = data
@@ -25,10 +24,7 @@ class MainFragmentAdapter(private var onItemViewClickListener: MainFragment.OnIt
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): MainViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_main_recycler_item, parent, false)

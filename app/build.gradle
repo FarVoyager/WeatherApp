@@ -82,6 +82,9 @@ dependencies {
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //Interceptor
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'com.squareup.okhttp3:okhttp:3.14.9'
