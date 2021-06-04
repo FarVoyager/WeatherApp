@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -58,11 +59,6 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // загружаем картинку через Picasso
-        val imageView: ImageView = binding.imageView
-        Picasso.get()
-            .load("https://freepngimg.com/download/city/36421-8-city-picture.png").into(imageView)
-
         //создаем переменную типа Weather, которой присваивается сохраненный ранее Weather в Bundle, т.е. город, на который мы нажали
         //элвис в данном случае присвоит weatherBundle значение по города умолчанию если бандл будет null
         weatherBundle = arguments?.getParcelable(BUNDLE_EXTRA) ?: Weather()
@@ -86,14 +82,6 @@ class DetailsFragment : Fragment() {
                 binding.fragmentContainer.visibility = View.VISIBLE
                 binding.loadingLayout.visibility = View.GONE
                 displayWeather(appState.weatherData[0])
-
-                println(appState.weatherData[0].temp.toString() + " HUI")
-                println(appState.weatherData[0].feels_like.toString() + " HUI")
-                println(appState.weatherData[0].humidity + " HUI")
-                println(appState.weatherData[0].wind + " HUI")
-                println(appState.weatherData[0].condition + " HUI")
-
-//                Toast.makeText(context, "SUCCESS", Toast.LENGTH_LONG).show()
             }
             is AppState.Loading -> {
                 binding.fragmentContainer.visibility = View.GONE
@@ -116,6 +104,7 @@ class DetailsFragment : Fragment() {
         val humidity = weather.humidity
         val windSpeed = weather.wind
         val condition = weather.condition
+        val daytime = weather.daytime
 
         binding.cityName.text = city.name
 
@@ -135,11 +124,35 @@ class DetailsFragment : Fragment() {
             binding.pointerSensed.text = ""
         }
 
+        val daytimeView = binding.backgroundWeatherFrame
+        when (daytime) {
+            "d" -> daytimeView.setBackgroundResource(R.drawable.city_day)
+            "e" -> daytimeView.setBackgroundResource(R.drawable.city_evening)
+            "n" -> daytimeView.setBackgroundResource(R.drawable.city_night1)
+            "m" -> daytimeView.setBackgroundResource(R.drawable.city_morning)
+            else -> daytimeView.setBackgroundResource(R.drawable.city_day)
+        }
+
+
+        val weatherView = binding.weatherView
         when (condition) {
-            "clear" -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
-            "cloudy" -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.cloudy)
-            "overcast" -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.rainy)
-            else -> binding.backgroundWeatherFrame.setBackgroundResource(R.drawable.sunny)
+            "clear" -> {
+                weatherView.setImageResource(0)
+                Picasso.get().load(R.drawable.sunny).into(weatherView)
+            }
+            "cloudy" -> {
+                weatherView.setImageResource(0)
+                Picasso.get().load(R.drawable.cloudy).into(weatherView)
+            }
+
+            "overcast" -> {
+                weatherView.setImageResource(0)
+                Picasso.get().load(R.drawable.rainy).into(weatherView)
+            }
+            else -> {
+                weatherView.setImageResource(0)
+                Picasso.get().load(R.drawable.clouds).into(weatherView)
+            }
         }
     }
 

@@ -10,7 +10,8 @@ data class Weather(
     val feels_like: Int = 21,
     val humidity: String = "68%",
     val wind: String = "3 м/с  ЮЗ",
-    val condition: String = "rainy"
+    val condition: String = "rainy",
+    val daytime: String = "default"
         ) : Parcelable
 
 fun getDefaultCity() = City("Moscow", "Europe", 55.755826, 37.617299900000035)

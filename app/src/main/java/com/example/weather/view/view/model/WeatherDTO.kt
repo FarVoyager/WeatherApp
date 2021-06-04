@@ -11,5 +11,6 @@ data class FactDTO(
     val feels_like: Int?,
     val humidity: String?,
     val wind_speed: String?,
-    val condition: String?
+    val condition: String?,
+    val daytime: String?
 )

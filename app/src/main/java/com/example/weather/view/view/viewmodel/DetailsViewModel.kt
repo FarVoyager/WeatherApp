@@ -38,7 +38,6 @@ class DetailsViewModel( //открытие коструктора
 
         override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
             val serverResponse: WeatherDTO? = response.body()
-            println(response.body().toString() + " HUI!")
             detailsLiveData.postValue(
                 if (response.isSuccessful && serverResponse != null) {
                     checkResponse(serverResponse)
@@ -55,10 +54,11 @@ class DetailsViewModel( //открытие коструктора
         private fun checkResponse(serverResponse: WeatherDTO): AppState {
             val fact = serverResponse.fact
 
-            return if (fact?.temp == null || fact.feels_like == null || fact.condition.isNullOrEmpty()) {
+            return if (fact?.temp == null || fact.feels_like == null || fact.condition.isNullOrEmpty() || fact.daytime == null) {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
                 AppState.Success(convertDtoToModel(serverResponse))
+
             }
         }
     }
