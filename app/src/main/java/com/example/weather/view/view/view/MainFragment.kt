@@ -1,5 +1,6 @@
 package com.example.weather.view.view.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,11 +13,15 @@ import com.example.weather.view.view.viewmodel.AppState
 import com.example.weather.view.view.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
+private const val IS_WORLD_KEY = "LIST_OF_CITIES_KEY"
+
 class MainFragment : Fragment() {
 
     //binding - аналог findViewById, конструкция ниже нужна в том числе для ситуаций когда binding = null
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+    // Значение для определения, список каких городов на данный момент отображается
+    private var isDataSetRus: Boolean = true
 
     //Экземпляр класса MainViewModel теперь здесь, во фрагменте MainFragment
     //lazy - ленивая инициализация,
@@ -25,8 +30,7 @@ class MainFragment : Fragment() {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
-    // Значение для определения, список каких городов на данный момент отображается
-    private var isDataSetRus: Boolean = true
+
 
     //Вложенный интерфейс для реализации переключения на фрагмент Details по нажатию на элемент списка
     interface OnItemViewClickListener {
@@ -69,11 +73,12 @@ class MainFragment : Fragment() {
         //привязываем LiveData, в качестве 2-го аргумента метода observe вызываем метод renderData, it - AppState
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         //получаем данные с локального хранилища
-        viewModel.getWeatherFromLocalSourceRus()
+        showListOfCities()
     }
 
     //метод реализует действия при нажатии на FAB
     private fun changeWeatherDataSet() {
+
         if (isDataSetRus)  {
             viewModel.getWeatherFromLocalSourceWorld()
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
@@ -82,6 +87,8 @@ class MainFragment : Fragment() {
             binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
         }
         isDataSetRus = !isDataSetRus
+        saveListOfCities(isDataSetRus)
+
     }
 
     //метод получает в аргументах текущий AppState и в зависимости от его состояния отображает содержимое экрана
@@ -115,11 +122,27 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
+
     //при уничтожении фрагмента удаляем лисенер из адаптера чтобы предотвратить утечки памяти
     override fun onDestroy() {
         adapter.removeListener()
         super.onDestroy()
     }
 
+    private fun saveListOfCities(isDataSetRus: Boolean) {
+        val pref = activity?.getPreferences(Context.MODE_PRIVATE)
+        pref?.edit()?.putBoolean(IS_WORLD_KEY, isDataSetRus)?.apply()
+    }
+
+    private fun showListOfCities() {
+        activity?.let {
+
+            if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_WORLD_KEY, false)) {
+                viewModel.getWeatherFromLocalSourceRus()
+            } else {
+                changeWeatherDataSet()
+            }
+        }
+    }
 
 }
