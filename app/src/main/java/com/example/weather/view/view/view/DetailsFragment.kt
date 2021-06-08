@@ -80,16 +80,16 @@ class DetailsFragment : Fragment() {
         when (appState) {
             is AppState.Success -> {
                 binding.fragmentContainer.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.includedLoadingLayout.loadingLayout.visibility = View.GONE
                 displayWeather(appState.weatherData[0])
             }
             is AppState.Loading -> {
                 binding.fragmentContainer.visibility = View.GONE
-                binding.loadingLayout.visibility = View.VISIBLE
+                binding.includedLoadingLayout.loadingLayout.visibility = View.VISIBLE
             }
             is AppState.Error -> {
                 binding.fragmentContainer.visibility = View.VISIBLE
-                binding.loadingLayout.visibility = View.GONE
+                binding.includedLoadingLayout.loadingLayout.visibility = View.GONE
                 Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show()
             }
         }
@@ -99,6 +99,7 @@ class DetailsFragment : Fragment() {
     private fun displayWeather(weather: Weather) {
 
         val city = weatherBundle.city
+        saveCity(city, weather) //сохраняем данные погоды для истории
         val temp = weather.temp
         val feelsLike = weather.feels_like
         val humidity = weather.humidity
@@ -154,6 +155,11 @@ class DetailsFragment : Fragment() {
                 Picasso.get().load(R.drawable.clouds).into(weatherView)
             }
         }
+    }
+
+    private fun saveCity(city: City, weather: Weather) {
+        viewModel.saveCityToDB(
+            Weather(city, weather.temp, weather.feels_like, weather.humidity, weather.wind, weather.condition, weather.daytime))
     }
 
     //Реализация Parcelable, в Gradle был прописан     id 'kotlin-parcelize'

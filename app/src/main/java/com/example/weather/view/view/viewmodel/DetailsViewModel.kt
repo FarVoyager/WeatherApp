@@ -2,10 +2,10 @@ package com.example.weather.view.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather.view.view.app.App.Companion.getHistoryDao
+import com.example.weather.view.view.model.Weather
 import com.example.weather.view.view.model.WeatherDTO
-import com.example.weather.view.view.repository.DetailsRepository
-import com.example.weather.view.view.repository.DetailsRepositoryImpl
-import com.example.weather.view.view.repository.RemoteDataSource
+import com.example.weather.view.view.repository.*
 import com.example.weather.view.view.utils.convertDtoToModel
 import com.google.gson.Gson
 import okhttp3.*
@@ -22,7 +22,9 @@ class DetailsViewModel( //открытие коструктора
     //Property #1. LiveData позволяет подписываться на события элемента типа <?> и уведомлять о его изменении
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
     //Property #2
-    private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource())
+    private val detailsRepositoryImpl: DetailsRepository = DetailsRepositoryImpl(RemoteDataSource()),
+    //Property #3
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
 //закрытие конструктора
 ) : ViewModel() {
     //тело класса
@@ -31,6 +33,10 @@ class DetailsViewModel( //открытие коструктора
     fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
         detailsLiveData.value = AppState.Loading  //обновляем состояние AppState, liveData слушает
         detailsRepositoryImpl.getWeatherDetailsFromServer(lat, lon, callBack)  // через интерфейс вызываем метод получения данных у API
+    }
+
+    fun saveCityToDB(weather: Weather) {
+        historyRepository.saveEntity(weather)
     }
 
     private val callBack = object :

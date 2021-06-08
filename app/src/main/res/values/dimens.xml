@@ -15,4 +15,5 @@
     <dimen name="recycler_item_line_margin_end">20dp</dimen>
     <dimen name="main_container_text_size">10sp</dimen>
     <dimen name="margin_5_dp">5dp</dimen>
+    <dimen name="hairline">1dp</dimen>
 </resources>

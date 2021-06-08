@@ -6,11 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.FragmentManager
 import com.example.weather.R
 
 
 class MainActivity : AppCompatActivity() {
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +23,25 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.activityContainer, MainFragment.newInstance())
                 .commitNow()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.action_bar_history, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                val manager = this.supportFragmentManager
+                manager.beginTransaction()
+                    .replace(R.id.activityContainer, HistoryFragment.newInstance())
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
