@@ -26,7 +26,6 @@ class MainViewModel(
     private fun getDataFromLocalSource(isRussian : Boolean) {
         liveDataToObserve.value = AppState.Loading
         Thread {
-            sleep(1000)
             liveDataToObserve.postValue(AppState.Success(if (isRussian)
                 mainRepositoryImpl.getWeatherFromLocalSourceRus()
             else

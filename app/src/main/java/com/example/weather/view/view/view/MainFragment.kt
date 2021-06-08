@@ -13,7 +13,7 @@ import com.example.weather.view.view.viewmodel.AppState
 import com.example.weather.view.view.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
-private const val IS_WORLD_KEY = "LIST_OF_CITIES_KEY"
+private const val IS_RUS_KEY = "IS_RUS_KEY"
 
 class MainFragment : Fragment() {
 
@@ -63,9 +63,9 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         //соединяем наш RecyclerView с адаптером, созданным ранее
         binding.mainFragmentRecyclerView.adapter = adapter
         //реализуем исполнение метода changeWeatherDataSet по нажатию на FAB
@@ -88,7 +88,6 @@ class MainFragment : Fragment() {
         }
         isDataSetRus = !isDataSetRus
         saveListOfCities(isDataSetRus)
-
     }
 
     //метод получает в аргументах текущий AppState и в зависимости от его состояния отображает содержимое экрана
@@ -116,12 +115,10 @@ class MainFragment : Fragment() {
         }
     }
 
-
     companion object {
         @JvmStatic
         fun newInstance() = MainFragment()
     }
-
 
     //при уничтожении фрагмента удаляем лисенер из адаптера чтобы предотвратить утечки памяти
     override fun onDestroy() {
@@ -131,13 +128,13 @@ class MainFragment : Fragment() {
 
     private fun saveListOfCities(isDataSetRus: Boolean) {
         val pref = activity?.getPreferences(Context.MODE_PRIVATE)
-        pref?.edit()?.putBoolean(IS_WORLD_KEY, isDataSetRus)?.apply()
+        pref?.edit()?.putBoolean(IS_RUS_KEY, isDataSetRus)?.apply()
     }
 
     private fun showListOfCities() {
         activity?.let {
 
-            if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_WORLD_KEY, false)) {
+            if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_RUS_KEY, true)) {
                 viewModel.getWeatherFromLocalSourceRus()
             } else {
                 changeWeatherDataSet()
