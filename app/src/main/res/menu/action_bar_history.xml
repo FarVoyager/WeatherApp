@@ -7,4 +7,10 @@
         android:title="@string/menu_title_history"
         android:icon="@android:drawable/ic_menu_recent_history"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_content_provider"
+        android:icon="@android:drawable/stat_sys_phone_call"
+        android:title="@string/content_provider"
+        app:showAsAction="always" />
+
 </menu>

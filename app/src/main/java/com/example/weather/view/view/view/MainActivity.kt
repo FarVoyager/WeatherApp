@@ -41,6 +41,14 @@ class MainActivity : AppCompatActivity() {
                     .commitAllowingStateLoss()
                 true
             }
+            R.id.menu_content_provider -> {
+                val manager = this.supportFragmentManager
+                manager.beginTransaction()
+                    .replace(R.id.activityContainer, ContentProviderFragment.newInstance())
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
