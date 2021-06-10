@@ -30,8 +30,6 @@ class MainFragment : Fragment() {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
-
-
     //Вложенный интерфейс для реализации переключения на фрагмент Details по нажатию на элемент списка
     interface OnItemViewClickListener {
         fun onItemViewClick(weather: Weather)

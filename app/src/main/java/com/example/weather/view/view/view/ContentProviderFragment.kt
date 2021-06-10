@@ -1,17 +1,23 @@
 package com.example.weather.view.view.view
 
 import android.app.AlertDialog
+import android.content.ContentResolver
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.weather.R
 import com.example.weather.databinding.FragmentContentProviderBinding
-import com.example.weather.databinding.FragmentDetailsBinding
-import java.util.jar.Manifest
+
 
 const val REQUEST_CODE = 42
 
@@ -23,7 +29,7 @@ class ContentProviderFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentContentProviderBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,7 +56,7 @@ class ContentProviderFragment : Fragment() {
                 println("BEB PERMISSION_GRANTED")
 
                 //Доступ к контактам на телефоне есть
-//                getContacts()
+                getContacts()
             }
             //Опционально: если нужно пояснение перед запросом рарешений
             shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS) -> {
@@ -61,7 +67,7 @@ class ContentProviderFragment : Fragment() {
                         requestPermission()
                     }
                     .setNegativeButton("Не надо") { dialog, _ ->
-                            dialog.dismiss()
+                        dialog.dismiss()
                     }
                     .create()
                     .show()
@@ -86,15 +92,14 @@ class ContentProviderFragment : Fragment() {
         when (requestCode) {
             REQUEST_CODE -> {
                 // Проверяем, дано ли пользователем разрешение по нашему запросу
-                if ((grantResults.isNotEmpty()) && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-//                    getContacts()
+                if ((grantResults.isNotEmpty()) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getContacts()
                 } else {
                     // Поясните пользователю, что экран останется пустым, потому что доступ к контактам не предоставлен
                     AlertDialog.Builder(requireContext())
                         .setTitle("Доступ к контактам")
                         .setMessage("Вы ранее запретили доступ к контактам. Пожалуйста, разрешите доступ в настройках вручную.")
-                        .setNegativeButton("Закрыть") { dialog,_ ->
+                        .setNegativeButton("Закрыть") { dialog, _ ->
                             dialog.dismiss()
                         }
                         .create()
@@ -107,8 +112,51 @@ class ContentProviderFragment : Fragment() {
 
 
 
-    private fun getContacts() {
-        TODO("Not yet implemented")
-    }
 
+    private fun getContacts() {
+        context?.let {
+            //получаем ContentResolver у контекста
+            val contentResolver: ContentResolver = it.contentResolver
+            //Отправляем запрос на получение контактов и получаем ответ в виде Cursor'а
+            val cursorWithContacts: Cursor? = contentResolver.query(
+                Phone.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+            )
+
+            cursorWithContacts?.let { cursor ->
+                for (i in 0..cursor.count) {
+                    //переходим на позицию (строка) в курсоре
+                    if (cursor.moveToPosition(i)) {
+                        //берем из курсора столбец с именем
+                        val name =
+                            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+
+                        val phoneNumber =
+                            cursor.getString(cursor.getColumnIndex(Phone.NUMBER))
+
+                        //добавляем текстовое поле и присваиваем ему имя name
+                        binding.containerForContacts.addView(
+                            AppCompatTextView(it).apply {
+                                val textToDisplay = "$name $phoneNumber"
+                                text = textToDisplay
+                                textSize = resources.getDimension(R.dimen.main_container_text_size)
+
+                                //реализация звонка по тапу на контакт
+                                setOnClickListener {
+                                    val textSplit = text.split(" ")
+                                    val numberToCall = textSplit[1]
+                                    val uri = "tel:$numberToCall"
+                                    val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse(uri))
+                                    startActivity(callIntent)
+                                }
+                            })
+                    }
+                }
+            }
+            cursorWithContacts?.close()
+        }
+    }
 }

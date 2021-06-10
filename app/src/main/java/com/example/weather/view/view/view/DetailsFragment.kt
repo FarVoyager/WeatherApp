@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -68,12 +69,22 @@ class DetailsFragment : Fragment() {
         viewModel.getWeatherFromRemoteSource(weatherBundle.city.lat, weatherBundle.city.lon)
 
         //выполняем требование для использования API Яндекс.Погоды
-        //при нажатии на Яндекс.Погода открывается ее сайт
+        //при тапе на Яндекс.Погода открывается ее сайт
         binding.yandex.setOnClickListener {
             val browserIntent =
                 Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/pogoda/moscow"))
             startActivity(browserIntent)
         }
+
+        //при тапе на город переходим в main fragment
+        binding.cityName.setOnClickListener {
+            val manager: FragmentManager = requireActivity().supportFragmentManager
+            manager.beginTransaction()
+                .replace(R.id.activityContainer, MainFragment.newInstance())
+                .addToBackStack(null)
+                .commit()
+        }
+
     }
 
     private fun renderData(appState: AppState) {
