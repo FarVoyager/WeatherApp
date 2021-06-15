@@ -16,6 +16,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -90,6 +91,10 @@ dependencies {
     //Interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
 
+    //Google Maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'com.squareup.okhttp3:okhttp:3.14.9'

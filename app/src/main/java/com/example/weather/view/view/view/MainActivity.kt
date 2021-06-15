@@ -1,12 +1,9 @@
 package com.example.weather.view.view.view
 
-import android.content.Intent
-import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.fragment.app.FragmentManager
 import com.example.weather.R
 
 
@@ -45,6 +42,14 @@ class MainActivity : AppCompatActivity() {
                 val manager = this.supportFragmentManager
                 manager.beginTransaction()
                     .replace(R.id.activityContainer, ContentProviderFragment.newInstance())
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss()
+                true
+            }
+            R.id.menu_google_maps -> {
+                val manager = this.supportFragmentManager
+                manager.beginTransaction()
+                    .replace(R.id.activityContainer, GoogleMapsFragment())
                     .addToBackStack(null)
                     .commitAllowingStateLoss()
                 true
