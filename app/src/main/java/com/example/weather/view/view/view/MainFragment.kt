@@ -206,9 +206,16 @@ class MainFragment : Fragment() {
     }
 
     private val onLocationListener = object : LocationListener {
+
         override fun onLocationChanged(location: Location) {
-            getAddressAsync(requireContext(), location)
+            context?.let {
+                getAddressAsync(it, location)
+            }
         }
+
+        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+        override fun onProviderEnabled(provider: String) {}
+        override fun onProviderDisabled(provider: String) {}
     }
 
     private fun requestPermission() {

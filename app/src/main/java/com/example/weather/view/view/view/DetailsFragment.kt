@@ -157,7 +157,7 @@ class DetailsFragment : Fragment() {
                 Picasso.get().load(R.drawable.cloudy).into(weatherView)
             }
 
-            "overcast" -> {
+            "overcast", "rain" -> {
                 weatherView.setImageResource(0)
                 Picasso.get().load(R.drawable.rainy).into(weatherView)
             }
