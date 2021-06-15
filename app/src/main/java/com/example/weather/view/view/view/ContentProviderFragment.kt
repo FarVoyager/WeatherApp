@@ -18,8 +18,7 @@ import androidx.fragment.app.Fragment
 import com.example.weather.R
 import com.example.weather.databinding.FragmentContentProviderBinding
 
-
-const val REQUEST_CODE = 42
+const val REQUEST_CODE_CONTACTS = 42
 
 class ContentProviderFragment : Fragment() {
 
@@ -38,7 +37,6 @@ class ContentProviderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
-        println("BEB onViewCreated")
     }
 
     companion object {
@@ -80,7 +78,7 @@ class ContentProviderFragment : Fragment() {
     }
 
     private fun requestPermission() {
-        requestPermissions(arrayOf(android.Manifest.permission.READ_CONTACTS), REQUEST_CODE)
+        requestPermissions(arrayOf(android.Manifest.permission.READ_CONTACTS), REQUEST_CODE_CONTACTS)
     }
 
     // Обратный вызов после получения разрешений от пользователя
@@ -90,7 +88,7 @@ class ContentProviderFragment : Fragment() {
         grantResults: IntArray
     ) {
         when (requestCode) {
-            REQUEST_CODE -> {
+            REQUEST_CODE_CONTACTS -> {
                 // Проверяем, дано ли пользователем разрешение по нашему запросу
                 if ((grantResults.isNotEmpty()) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getContacts()
