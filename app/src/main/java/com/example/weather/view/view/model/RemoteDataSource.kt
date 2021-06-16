@@ -1,11 +1,10 @@
-package com.example.weather.view.view.repository
+package com.example.weather.view.view.model
 
 import com.example.weather.BuildConfig
-import com.example.weather.view.view.model.WeatherDTO
+import com.example.weather.view.view.repository.WeatherAPI
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Callback

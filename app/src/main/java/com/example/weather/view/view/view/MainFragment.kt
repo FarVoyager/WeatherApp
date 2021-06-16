@@ -20,7 +20,9 @@ import com.example.weather.view.view.model.City
 import com.example.weather.view.view.model.Weather
 import com.example.weather.view.view.viewmodel.AppState
 import com.example.weather.view.view.viewmodel.MainViewModel
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.iid.FirebaseInstanceId
 import java.io.IOException
 
 private const val IS_RUS_KEY = "IS_RUS_KEY"
@@ -49,6 +51,8 @@ class MainFragment : Fragment() {
     interface OnItemViewClickListener {
         fun onItemViewClick(weather: Weather)
     }
+
+
 
     //создаем экземпляр адаптера RecyclerView, в поле аргументов наш интерфейс с реализацией
     private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
@@ -167,6 +171,7 @@ class MainFragment : Fragment() {
     }
 
     private fun getLocation() {
+
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -212,7 +217,6 @@ class MainFragment : Fragment() {
                 getAddressAsync(it, location)
             }
         }
-
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
         override fun onProviderEnabled(provider: String) {}
         override fun onProviderDisabled(provider: String) {}

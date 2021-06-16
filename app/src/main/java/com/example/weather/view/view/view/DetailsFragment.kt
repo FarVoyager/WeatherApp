@@ -45,7 +45,7 @@ class DetailsFragment : Fragment() {
     private lateinit var weatherBundle: Weather
 
     private val viewModel: DetailsViewModel by lazy {   //используем ленивую инициализацию чтобы предотвратить утечки памяти
-        ViewModelProvider(this).get(DetailsViewModel::class.java)  //привязываем viewModel  ЖЦ фрагмента (this)
+        ViewModelProvider(this).get(DetailsViewModel::class.java)  //привязываем viewModel к ЖЦ фрагмента (this)
     }
 
     override fun onCreateView(

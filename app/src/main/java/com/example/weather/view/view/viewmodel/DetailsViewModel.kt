@@ -3,16 +3,14 @@ package com.example.weather.view.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weather.view.view.app.App.Companion.getHistoryDao
+import com.example.weather.view.view.model.RemoteDataSource
 import com.example.weather.view.view.model.Weather
 import com.example.weather.view.view.model.WeatherDTO
 import com.example.weather.view.view.repository.*
 import com.example.weather.view.view.utils.convertDtoToModel
-import com.google.gson.Gson
-import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 private const val SERVER_ERROR = "Ошибка сервера"
 private const val REQUEST_ERROR = "Ошибка запроса на сервер"
@@ -59,7 +57,6 @@ class DetailsViewModel( //открытие коструктора
 
         private fun checkResponse(serverResponse: WeatherDTO): AppState {
             val fact = serverResponse.fact
-
             return if (fact?.temp == null || fact.feels_like == null || fact.condition.isNullOrEmpty() || fact.daytime == null) {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
