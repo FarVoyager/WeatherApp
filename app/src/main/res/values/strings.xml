@@ -1,3 +1,50 @@
 <resources>
     <string name="app_name">Weather</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error">Error</string>
+    <string name="reload">Reload</string>
+    <string name="humidity">Влажность</string>
+    <string name="wind">3 м/с ЮЗ</string>
+    <string name="title">Погода в городе</string>
+    <string name="dayTimeTitle">Погода на ближайшее время</string>
+    <string name="yandexWeatherWidget">Яндекс.Погода</string>
+    <string name="windTitle">Ветер</string>
+    <string name="sensedTitle">Ощущается как</string>
+    <string name="an_image_of_weather_condition">an image of weather condition</string>
+    <string name="threads">threads</string>
+
+
+    <string name="in_main_thread">В главном потоке</string>
+    <string name="from_thread">Из потока %d</string>
+    <string name="in_thread">Выводим в потоке %s</string>
+    <string name="calculate_in_thread">Считаем в потоке %s</string>
+    <string name="my_handler_thread">My_Handler_Thread</string>
+    <string name="hello_from_thread_fragment">Hello from ThreadsFragment</string>
+    <string name="calculate">Расчет</string>
+    <string name="default_number">1</string>
+    <string name="calc_in_thread">Расчет в потоке</string>
+    <string name="handler_thread">Handler_Thread</string>
+    <string name="service">Service</string>
+    <string name="service_broadcast">Service + Broadcast</string>
+    <string name="menu_title_history">history</string>
+    <string name="content_provider">Content provider</string>
+
+    <string name="dialog_button_close">Закрыть</string>
+    <string name="dialog_title_no_gps">Доступ к геолокации закрыт</string>
+    <string name="dialog_message_no_gps">Разрешите доступ к геолокации, если хотите узнать погоду текущего места</string>
+    <string name="dialog_title_gps_turned_off">GPS отключён</string>
+    <string name="dialog_message_last_location_unknown">Местонахождение неизвестно. Включите GPS, если хотите получить погоду по текущему адресу</string>
+    <string name="dialog_message_last_known_location">Показана последняя известная локация. Включите GPS, если хотите обновить местонахождение</string>
+    <string name="dialog_rationale_title">Доступ к геолокации</string>
+    <string name="dialog_rationale_message">Объяснение</string>
+    <string name="dialog_rationale_give_access">Предоставить доступ</string>
+    <string name="dialog_rationale_decline">Не надо</string>
+    <string name="dialog_address_title">Ваш адрес</string>
+    <string name="dialog_address_get_weather">Узнать погоду</string>
+    <string name="google_maps">Google Maps</string>
+    <string name="default_address">Red Square, 1, Moscow</string>
+    <string name="button_search_map">Search</string>
+    <string name="marker_start">Start</string>
+
 </resources>
