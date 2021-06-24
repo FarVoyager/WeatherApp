@@ -51,9 +51,6 @@ class MainFragment : Fragment() {
     interface OnItemViewClickListener {
         fun onItemViewClick(weather: Weather)
     }
-
-
-
     //создаем экземпляр адаптера RecyclerView, в поле аргументов наш интерфейс с реализацией
     private val adapter = MainFragmentAdapter(object : OnItemViewClickListener {
         //переопределяем (реализуем) метод интерфейса
