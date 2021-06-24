@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.example.weather.R
 
 
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_google_maps -> {
+                Toast.makeText(this, "Full version required", Toast.LENGTH_SHORT).show()
                 val manager = this.supportFragmentManager
                 manager.beginTransaction()
                     .replace(R.id.activityContainer, GoogleMapsFragment())
